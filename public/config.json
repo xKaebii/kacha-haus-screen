@@ -1,26 +1,34 @@
 {
-  "version": 6,
-  "mode": "playlist",
+  "version": 7,
+  "mode": "kinetic",
   "scenes": [
+    {
+      "type": "kinetic",
+      "seconds": 30
+    },
     {
       "type": "led",
       "seconds": 30
     },
     {
       "type": "stretch",
-      "seconds": 16.5
+      "seconds": 16.5,
+      "off": true
     },
     {
       "type": "tunnel",
-      "seconds": 15.5
+      "seconds": 15.5,
+      "off": true
     },
     {
       "type": "beat",
-      "seconds": 17.5
+      "seconds": 17.5,
+      "off": true
     },
     {
       "type": "windows",
-      "seconds": 15
+      "seconds": 15,
+      "off": true
     }
   ],
   "bg": "#12131c",
@@ -46,5 +54,16 @@
   "guides": false,
   "logoX": 0,
   "logoY": 0,
-  "logoSize": 50
+  "logoSize": 50,
+  "kinetic": {
+    "words": [
+      "KACHA",
+      "HAUS",
+      "NO CAP",
+      "ONLY CUP"
+    ],
+    "palette": "original",
+    "font": "original",
+    "hold": 6
+  }
 }

@@ -8,6 +8,7 @@
 | type | ฉาก | จุดหักมุม |
 |---|---|---|
 | `led` | ป้าย LED เดิม: คำเฉียงวิ่งสวนกัน + โลโก้กลาง | – |
+| `kinetic` | **Kinetic 3D** (พอร์ตจาก Codrops ด้านล่าง) 4 รูปทรงบนวงกลม หมุนต่อกัน · `endless` ปมคำ · `swirl` ลูกบอลคำ · `twisted` แท่งคำบิด · `relax` ผืนคำเป็นคลื่น (เลือกเดี่ยวได้) | – |
 | `stretch` | **Stretch Stack** คำเต็มความกว้างซ้อนกัน คำหนึ่งยืดเต็มจอทีละคำ | ทั้งกองพับเข้ากลางจอ โลโก้หยดน้ำบานออกมา |
 | `tunnel` | **Tunnel Dive** (Three.js) ดิ่งในอุโมงค์ที่ผนังเป็นคำ เร่ง-ผ่อนเป็นจังหวะ | ผนังหายไป โลโก้ลอยขึ้นมาจากความลึก |
 | `beat` | **One Line, One Beat** "IF I WERE YOU I WOULD DRINK MYSELF TOO" ทีละท่อนเต็มจอ | "TOO" ค่อยๆ ถูกเติมเหมือนนมไหลขึ้น แล้วกลายเป็นโลโก้ |
@@ -44,3 +45,8 @@ npm run build      # dist/ + build.json
 - หน้าเว็บเช็ก `build.json` ทุก 1 นาที ถ้ามีเวอร์ชันใหม่จะจางออกแล้วโหลดใหม่เอง · รีโหลดนุ่มๆ ทุก 6 ชม. · เน็ตหลุดโชว์ของเดิมต่อ
 - ฉากอยู่ใน `src/scenes/` · สี/ฟอนต์/โลโก้/ease ใน `src/lib/brand.js`
 - ฟอนต์ Higed © arijuanda (All Rights Reserved) — ยังต้องเช็กไลเซนส์การใช้งาน
+
+## เครดิต
+- ฉาก `kinetic` / `endless` / `swirl` / `twisted` / `relax` พอร์ตจาก **Kinetic Typography with Three.js** โดย Mario Carrillo (marioecg) สำหรับ Codrops (2020) — https://tympanus.net/codrops/2020/06/02/kinetic-typography-with-three-js/ · https://github.com/marioecg/codrops-kinetic-typo · MIT License, Copyright (c) 2009 - 2020 Codrops
+- ฟอนต์ต้นฉบับของฉากนี้: Orbitron, Montserrat Alternates, Archivo Black, Open Sans (SIL Open Font License ผ่าน @fontsource)
+- ตั้งค่าใน config: `kinetic.words` (4 คำ), `kinetic.palette` (`original` / `brand`), `kinetic.font` (`original` / `higed`), `kinetic.hold` (วินาทีที่ค้างแต่ละรูปทรง)

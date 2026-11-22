@@ -9,6 +9,10 @@
     "preview": "vite preview --port 8771"
   },
   "dependencies": {
+    "@fontsource/archivo-black": "5.1.0",
+    "@fontsource/montserrat-alternates": "5.1.0",
+    "@fontsource/open-sans": "5.1.0",
+    "@fontsource/orbitron": "5.1.0",
     "firebase": "10.14.1",
     "gsap": "3.12.5",
     "react": "18.3.1",

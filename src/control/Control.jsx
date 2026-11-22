@@ -7,6 +7,11 @@ const auth = getAuth(app)
 // dev only: ?demo shows the editor without signing in and never saves
 const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
 const SCENES = [
+  { type: 'kinetic', name: 'Kinetic 3D', sub: '4 รูปทรงหมุนต่อกัน (Codrops)', seconds: 30 },
+  { type: 'endless', name: 'Kinetic · Endless', sub: 'ปมคำ', seconds: 15 },
+  { type: 'swirl', name: 'Kinetic · Swirl', sub: 'ลูกบอลคำ', seconds: 15 },
+  { type: 'twisted', name: 'Kinetic · Twisted', sub: 'แท่งคำบิด', seconds: 15 },
+  { type: 'relax', name: 'Kinetic · Relax', sub: 'ผืนคำเป็นคลื่น', seconds: 15 },
   { type: 'led', name: 'ป้าย LED', sub: 'คำเฉียงวิ่ง + โลโก้', seconds: 30 },
   { type: 'stretch', name: 'Stretch Stack', sub: 'คำยืดเต็มจอทีละคำ', seconds: 16.5 },
   { type: 'tunnel', name: 'Tunnel Dive', sub: 'อุโมงค์คำ 3D', seconds: 15.5 },
@@ -31,7 +36,8 @@ function normalise (c) {
     rows: DEFAULT_ROWS, image: '', fit: 'cover', guides: false, ...c, scenes,
     stretch: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'ABSOLUTELY', 'DESIGNED'], ...(c.stretch || {}) },
     beat: { lines: ['IF I', 'WERE / YOU', 'I WOULD', 'DRINK', 'MYSELF', 'TOO'], ...(c.beat || {}) },
-    windows: { words: ['KACHA', 'HAUS'], ...(c.windows || {}) }
+    windows: { words: ['KACHA', 'HAUS'], ...(c.windows || {}) },
+    kinetic: { words: ['KACHA', 'HAUS', 'NO CAP', 'ONLY CUP'], palette: 'original', font: 'original', hold: 6, ...(c.kinetic || {}) }
   }
 }
 
@@ -142,7 +148,19 @@ export default function Control () {
       </section>
 
       <section className="c-card">
-        <h2>สี</h2>
+        <h2>Kinetic 3D</h2>
+        <div className="c-row2">
+          {['Endless (ปม)', 'Swirl (ลูกบอล)', 'Twisted (แท่ง)', 'Relax (ผืน)'].map((l, i) => (
+            <label key={i} className="c-field">{l}<input defaultValue={cfg.kinetic.words[i]} onChange={e => update(p => { const w = [...p.kinetic.words]; w[i] = e.target.value.toUpperCase(); return { kinetic: { ...p.kinetic, words: w } } })} /></label>
+          ))}
+        </div>
+        <div className="c-seg">{[['original', 'สีต้นฉบับ'], ['brand', 'สีร้าน']].map(([k, l]) => <button key={k} className={cfg.kinetic.palette === k ? 'on' : ''} onClick={() => update(p => ({ kinetic: { ...p.kinetic, palette: k } }))}>{l}</button>)}</div>
+        <div className="c-seg">{[['original', 'ฟอนต์ต้นฉบับ'], ['higed', 'ฟอนต์ Higed']].map(([k, l]) => <button key={k} className={cfg.kinetic.font === k ? 'on' : ''} onClick={() => update(p => ({ kinetic: { ...p.kinetic, font: k } }))}>{l}</button>)}</div>
+        <Slider label="ค้างแต่ละรูปทรง" v={cfg.kinetic.hold} min={2} max={20} step={0.5} unit=" วิ" on={v => update(p => ({ kinetic: { ...p.kinetic, hold: v } }))} />
+      </section>
+
+      <section className="c-card">
+        <h2>สี <small>(ป้าย LED และฉากอื่น)</small></h2>
         <div className="c-chips">{PRESETS.map(p => (
           <button key={p.name} className={cfg.bg === p.bg && cfg.fg === p.fg ? 'on' : ''} onClick={() => update({ bg: p.bg, fg: p.fg })}>
             <i style={{ background: p.bg, borderColor: p.fg }} />{p.name}
