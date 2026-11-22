@@ -4,6 +4,7 @@ import Stretch from './scenes/Stretch.jsx'
 import Tunnel from './scenes/Tunnel.jsx'
 import Beat from './scenes/Beat.jsx'
 import Windows from './scenes/Windows.jsx'
+import { watchConfig } from './lib/firebase.js'
 
 const SCENES = { led: Led, stretch: Stretch, tunnel: Tunnel, beat: Beat, windows: Windows }
 const q = new URLSearchParams(location.search)
@@ -27,7 +28,8 @@ function withUrl (cfg) {
 // What to play: one scene from the URL, the playlist, or the single mode
 function sequence (cfg) {
   if (q.get('scene')) return [{ type: q.get('scene'), seconds: 0 }]
-  if (cfg.mode === 'playlist' && Array.isArray(cfg.scenes) && cfg.scenes.length) return cfg.scenes
+  const on = Array.isArray(cfg.scenes) ? cfg.scenes.filter(s => s && !s.off && s.type) : []
+  if (cfg.mode === 'playlist' && on.length) return on
   return [{ type: cfg.mode, seconds: 0 }]
 }
 
@@ -37,9 +39,13 @@ export default function App () {
   const [on, setOn] = useState(false)
   const leaving = useRef(false)
 
-  // Config every minute; new page code (build.json) fades out and reloads once
+  // Settings: live from Firebase (the control page) when set there, else config.json checked every minute.
+  // New page code (build.json) fades out and reloads once.
+  const live = useRef(false)
   useEffect(() => {
-    const load = () => getJSON('config.json').then(c => setCfg(prev => JSON.stringify(prev) === JSON.stringify(c) ? prev : c), () => setCfg(prev => prev || {}))
+    const put = c => setCfg(prev => JSON.stringify(prev) === JSON.stringify(c) ? prev : c)
+    const load = () => live.current || getJSON('config.json').then(c => live.current || put(c), () => setCfg(prev => prev || {}))
+    const stop = watchConfig(v => { live.current = !!v; v ? put(v) : load() }, () => { live.current = false })
     const check = () => getJSON('build.json').then(({ build }) => {
       if (!build || build === __BUILD__ || q.get('_v') === build || leaving.current) return
       leaving.current = true; setOn(false)
@@ -48,7 +54,7 @@ export default function App () {
     load()
     const t = setInterval(() => { load(); check() }, 60 * 1000)
     const r = setTimeout(() => { leaving.current = true; setOn(false); setTimeout(() => location.reload(), FADE + 300) }, 6 * 3600 * 1000)
-    return () => { clearInterval(t); clearTimeout(r) }
+    return () => { clearInterval(t); clearTimeout(r); stop() }
   }, [])
 
   const conf = useMemo(() => cfg && withUrl(cfg), [cfg])
@@ -91,7 +97,7 @@ export default function App () {
           : Scene && conf.mode !== 'black' ? <Scene cfg={conf} opts={item} /> : null}
       </div>
       {String(conf.guides) === 'true' && <Guides />}
-      {q.get('debug') && <div id="status">{item.type} · v{conf.version || 0} · {__BUILD__}</div>}
+      {q.get('debug') && <div id="status">{item.type} · v{conf.version || 0} · {live.current ? 'live' : 'file'} · {__BUILD__}</div>}
     </>
   )
 }

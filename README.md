@@ -15,7 +15,15 @@
 
 การเคลื่อนไหวทั้งหมด: ease-out ยาว (expo / quart) ไม่เด้ง ไม่ overshoot ไม่แฟลช
 
-## เปลี่ยนสิ่งที่ขึ้นจอ (จากที่ไหนก็ได้)
+## หน้า control (แก้จอแบบ live)
+**https://xkaebii.github.io/kacha-haus-screen/control.html** · เข้าด้วยบัญชี Google ของร้าน (`kachahaus@gmail.com`) · แก้แล้วจอเปลี่ยนในไม่กี่วินาที
+- เลือกเพลย์ลิสต์ / ฉากเดียว / รูป / จอดำ · เปิดปิดฉาก ตั้งเวลา เรียงลำดับ · สี · คำของทุกฉาก · ป้าย LED (มุม ขนาด ความเร็ว โลโก้)
+- ค่าเก็บใน Firebase Realtime Database โปรเจค `kacha-haus-screen` (บัญชีร้าน, แพลนฟรี Spark, Singapore) ที่ `screen/config`
+- กฎฐานข้อมูล: ใครก็อ่าน `screen` ได้ (จอต้องอ่าน) · เขียนได้เฉพาะบัญชีร้านที่ยืนยันอีเมลแล้ว · จะเพิ่มคนแก้ได้ ต้องแก้ Rules ใน Firebase console
+- ถ้ามีค่าใน Firebase จอใช้ค่านั้น · ถ้าไม่มี (หรือเชื่อมไม่ได้ตั้งแต่ต้น) ใช้ `public/config.json` · ปุ่ม "รีเซ็ตเป็นค่าเริ่มต้น" = โหลดจาก `config.json`
+- ทดสอบหน้า control ในเครื่องโดยไม่ล็อกอิน: `npm run dev` แล้วเปิด `/control.html?demo` (ไม่บันทึกจริง)
+
+## เปลี่ยนสิ่งที่ขึ้นจอผ่านไฟล์ (ค่าเริ่มต้น)
 แก้ `public/config.json` แล้ว commit (มือถือ: แอพ GitHub → repo นี้ → public/config.json → ✏️) · GitHub Actions build + deploy ~1–2 นาที แล้วจอเปลี่ยนเองภายใน 1 นาที (ไม่ต้อง refresh)
 
 - `mode`: `playlist` วนตาม `scenes` · หรือชื่อฉากเดียว (`led`, `stretch`, `tunnel`, `beat`, `windows`) · `image` รูปเต็มจอ (`image` = ลิงก์รูป, `fit` = `cover`/`contain`) · `black` จอดำ
