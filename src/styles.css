@@ -26,3 +26,14 @@ body { color: var(--fg); font-family: "Higed", Impact, sans-serif; transition: b
 #guides i { position: absolute; background: #ff3b30 }
 #guides span { position: absolute; left: 50%; top: 12%; transform: translateX(-50%); background: #000; padding: 6px 12px; white-space: nowrap }
 #status { position: fixed; right: 12px; bottom: 10px; font: 11px/1 system-ui, sans-serif; color: var(--fg); opacity: .5; z-index: 10 }
+
+/* TYPE scene (ports of Codrops On-Scroll Typography Animations + Kinetic Type Page Transition) */
+.ty { background: var(--bg); overflow: hidden; color: var(--fg) }
+.ty-wall { position: absolute; left: 50%; top: 50%; width: 100vmax; height: 100vmax; margin: -50vmax 0 0 -50vmax; display: grid; justify-content: center; align-content: center; text-align: center; will-change: transform; pointer-events: none }
+.ty-line { white-space: nowrap; font-size: clamp(7rem, 18.75vh, 15rem); line-height: .75; text-transform: uppercase; will-change: transform, opacity }
+.ty-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center }
+.ty-title { white-space: nowrap; line-height: 1; text-transform: uppercase; will-change: transform }
+.ty-word, .ty-wrap { display: inline-block; white-space: nowrap }
+.ty-wrap { overflow: hidden; vertical-align: top }
+.ty-char { display: inline-block; will-change: transform, opacity }
+.ty-space { display: inline-block; width: .28em }

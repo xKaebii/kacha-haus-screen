@@ -8,6 +8,7 @@
 | type | ฉาก | จุดหักมุม |
 |---|---|---|
 | `led` | ป้าย LED เดิม: คำเฉียงวิ่งสวนกัน + โลโก้กลาง | – |
+| `type` | **Type (GSAP ล้วน)** คำใหญ่ทีละคำ แต่ละคำเข้าด้วยท่าต่างกัน 15 ท่า ทุก 4 คำมีกำแพงคำหมุน −90° (พอร์ตจาก Codrops ด้านล่าง) | – |
 | `kinetic` | **Kinetic 3D** (พอร์ตจาก Codrops ด้านล่าง) 4 รูปทรงบนวงกลม หมุนต่อกัน · `endless` ปมคำ · `swirl` ลูกบอลคำ · `twisted` แท่งคำบิด · `relax` ผืนคำเป็นคลื่น (เลือกเดี่ยวได้) | – |
 | `stretch` | **Stretch Stack** คำเต็มความกว้างซ้อนกัน คำหนึ่งยืดเต็มจอทีละคำ | ทั้งกองพับเข้ากลางจอ โลโก้หยดน้ำบานออกมา |
 | `tunnel` | **Tunnel Dive** (Three.js) ดิ่งในอุโมงค์ที่ผนังเป็นคำ เร่ง-ผ่อนเป็นจังหวะ | ผนังหายไป โลโก้ลอยขึ้นมาจากความลึก |
@@ -50,3 +51,4 @@ npm run build      # dist/ + build.json
 - ฉาก `kinetic` / `endless` / `swirl` / `twisted` / `relax` พอร์ตจาก **Kinetic Typography with Three.js** โดย Mario Carrillo (marioecg) สำหรับ Codrops (2020) — https://tympanus.net/codrops/2020/06/02/kinetic-typography-with-three-js/ · https://github.com/marioecg/codrops-kinetic-typo · MIT License, Copyright (c) 2009 - 2020 Codrops
 - ฟอนต์ต้นฉบับของฉากนี้: Orbitron, Montserrat Alternates, Archivo Black, Open Sans (SIL Open Font License ผ่าน @fontsource)
 - ตั้งค่าใน config: `kinetic.words` (4 คำ), `kinetic.palette` (`original` / `brand`), `kinetic.font` (`original` / `higed`), `kinetic.hold` (วินาทีที่ค้างแต่ละรูปทรง)
+- ฉาก `type` พอร์ตจาก Codrops **On-Scroll Typography Animations** (https://github.com/codrops/OnScrollTypographyAnimations) และ **Kinetic Type Page Transition** (https://github.com/codrops/KineticTypePageTransition) · MIT License, Copyright (c) Codrops · ต้นฉบับขยับตามการเลื่อนหน้า ที่นี่เล่นตามเวลา · ตั้งค่า `type.words`, `type.font` (`archivo` / `higed`), `type.hold`

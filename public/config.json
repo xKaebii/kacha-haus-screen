@@ -1,14 +1,19 @@
 {
-  "version": 7,
-  "mode": "kinetic",
+  "version": 8,
+  "mode": "playlist",
   "scenes": [
+    {
+      "type": "type",
+      "seconds": 60
+    },
     {
       "type": "kinetic",
       "seconds": 30
     },
     {
       "type": "led",
-      "seconds": 30
+      "seconds": 30,
+      "off": true
     },
     {
       "type": "stretch",
@@ -65,5 +70,21 @@
     "palette": "original",
     "font": "original",
     "hold": 6
+  },
+  "type": {
+    "words": [
+      "KACHA",
+      "HAUS",
+      "ONLY CUP",
+      "NO CAP",
+      "CHINESE",
+      "MILK TEA",
+      "ABSOLUTELY",
+      "DESIGNED",
+      "LOVE YOU",
+      "CUP"
+    ],
+    "font": "archivo",
+    "hold": 1.1
   }
 }
