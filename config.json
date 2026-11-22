@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "mode": "led",
+  "bg": "#12131c",
+  "fg": "#f1f1f6",
+  "angle": -48,
+  "size": 15,
+  "speed": 12,
+  "logo": true,
+  "rows": [
+    "ONLY *CUP NO CAP KACHA HAUS",
+    "ABSOLUTELY *DESIGNED LOVE YOU CUP",
+    "*IF I WERE YOU I WOULD DRINK",
+    "MYSELF TOO *KACHA HAUS ONLY CUP",
+    "LOVE YOU *CUP NO CAP",
+    "KACHA HAUS *ABSOLUTELY DESIGNED",
+    "I WOULD *DRINK MYSELF TOO",
+    "NO *CAP ONLY CUP IF I WERE YOU",
+    "*KACHA *HAUS LOVE YOU CUP",
+    "ABSOLUTELY DESIGNED *MYSELF TOO"
+  ],
+  "image": "",
+  "fit": "cover"
+}

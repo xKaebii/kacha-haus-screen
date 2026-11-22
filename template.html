@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kacha Haus Screen</title>
+<style>
+@font-face{font-family:"Higed";src:url(fonts/higed.ttf) format("truetype");font-display:block}
+:root{--bg:#12131c;--fg:#f1f1f6;--angle:-48deg;--size:15vmin;--stroke:.022em}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);cursor:none;color-scheme:dark}
+body{color:var(--fg);font-family:"Higed",Impact,sans-serif;transition:background-color 1.4s cubic-bezier(.22,1,.36,1)}
+.layer{position:fixed;inset:0;opacity:0;transition:opacity 1.4s cubic-bezier(.22,1,.36,1)}
+.layer.on{opacity:1}
+#stage{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(var(--angle));display:flex;flex-direction:column;justify-content:center}
+.row{height:calc(var(--size)*.86);overflow:visible;white-space:nowrap;line-height:1}
+.track{display:inline-flex;will-change:transform;font-size:var(--size);text-transform:uppercase;animation:run var(--dur) linear infinite}
+.row.rev .track{animation-direction:reverse}
+@keyframes run{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(var(--w)*-1),0,0)}}
+.track span{padding-right:.32em;display:inline-block;transform:translateY(-.06em)}
+.o{color:transparent;-webkit-text-stroke:var(--stroke) var(--fg)}
+.f{color:var(--fg)}
+#mark{position:absolute;left:50%;top:50%;width:min(50vmin,50vmax);transform:translate(-50%,-50%)}
+#mark svg{display:block;width:100%;height:auto;overflow:visible}
+#mark .halo{fill:var(--bg);stroke:var(--bg)}
+#mark .ink{fill:var(--fg)}
+#image{background:#000}
+#image img{width:100%;height:100%;object-fit:var(--fit,cover);display:block}
+#status{position:fixed;right:12px;bottom:10px;font:11px/1 system-ui,sans-serif;color:var(--fg);opacity:0;transition:opacity .6s}
+body.debug #status{opacity:.5}
+</style>
+</head>
+<body>
+<div id="led" class="layer">
+  <div id="stage"></div>
+  <div id="mark">
+    <svg viewBox="0 0 2010 2000" aria-label="Kacha Haus">
+      <path class="halo" d="__PATH__" stroke-width="280" stroke-linejoin="round"/>
+      <path class="ink" d="__PATH__"/>
+    </svg>
+  </div>
+</div>
+<div id="image" class="layer"><img alt=""></div>
+<div id="status"></div>
+<script>
+/* Kacha Haus in-store screen.
+   Reads config.json every minute; change that file (on GitHub) and the screen follows within ~1-2 min.
+   URL options override the config for testing: ?bg=12131c&fg=f1f1f6&angle=-48&size=15&speed=12&mode=led&debug=1 */
+(function(){
+  var q = new URLSearchParams(location.search), root = document.documentElement.style;
+  if (q.get('debug')) document.body.classList.add('debug');
+  var DEFAULT = {mode:'led', bg:'#12131c', fg:'#f1f1f6', angle:-48, size:15, speed:12, logo:true, rows:[
+    'ONLY *CUP NO CAP KACHA HAUS', 'ABSOLUTELY *DESIGNED LOVE YOU CUP', '*IF I WERE YOU I WOULD DRINK',
+    'MYSELF TOO *KACHA HAUS ONLY CUP', 'LOVE YOU *CUP NO CAP', 'KACHA HAUS *ABSOLUTELY DESIGNED',
+    'I WOULD *DRINK MYSELF TOO', 'NO *CAP ONLY CUP IF I WERE YOU', '*KACHA *HAUS LOVE YOU CUP', 'ABSOLUTELY DESIGNED *MYSELF TOO']};
+  var cfg = null, applied = '', stage = document.getElementById('stage');
+
+  function opt(k){ var v = q.get(k); return v === null ? cfg[k] : v; }
+  function hex(v){ v = String(v); return v.charAt(0) === '#' ? v : '#' + v; }
+  function status(t){ document.getElementById('status').textContent = t; }
+
+  function buildRows(){
+    stage.innerHTML = '';
+    var rows = (cfg.rows || DEFAULT.rows).map(function(line){
+      return String(line).split(/\s+/).filter(Boolean).map(function(w){ return w.charAt(0) === '*' ? [w.slice(1), 1] : [w, 0]; });
+    }).filter(function(r){ return r.length; });
+    if (!rows.length) return;
+    var W = innerWidth, H = innerHeight, diag = Math.ceil(Math.hypot(W, H)) + 40;
+    stage.style.width = diag + 'px'; stage.style.height = diag + 'px';
+    var probe = document.createElement('div'); probe.className = 'row'; stage.appendChild(probe);
+    var rowH = probe.offsetHeight || W*.1; stage.removeChild(probe);
+    var n = Math.ceil(diag/rowH) + 2, scale = Math.min(W, H)/1080, speed = +opt('speed') || 12;
+    for (var i = 0; i < n; i++){
+      var words = rows[i % rows.length], row = document.createElement('div'), tr = document.createElement('div');
+      row.className = 'row' + (i % 2 ? ' rev' : ''); tr.className = 'track'; row.appendChild(tr); stage.appendChild(row);
+      var shift = (i*3) % words.length, seq = words.slice(shift).concat(words.slice(0, shift));
+      var unit = document.createElement('div'); unit.style.display = 'inline-flex';
+      seq.forEach(function(w){ var s = document.createElement('span'); s.className = w[1] ? 'f' : 'o'; s.textContent = w[0]; unit.appendChild(s); });
+      tr.appendChild(unit);
+      var base = unit.innerHTML, guard = 0;
+      while (unit.offsetWidth < diag && guard++ < 20) unit.innerHTML += base;
+      var w = unit.offsetWidth; tr.appendChild(unit.cloneNode(true));
+      var v = speed*scale*(0.85 + ((i*7) % 5)*0.075);
+      tr.style.setProperty('--w', w + 'px'); tr.style.setProperty('--dur', (w/v).toFixed(2) + 's');
+      tr.style.animationDelay = (-(i*1.37) % (w/v)).toFixed(2) + 's';
+    }
+  }
+
+  function show(id){
+    ['led','image'].forEach(function(k){ document.getElementById(k).classList.toggle('on', k === id); });
+  }
+
+  // Fade the current content out, swap, fade back in (no flashes: the background colour eases too)
+  function apply(){
+    var key = JSON.stringify(cfg) + location.search + innerWidth + 'x' + innerHeight;
+    if (key === applied) return; applied = key;
+    var mode = opt('mode') || 'led', wasOn = !!document.querySelector('.layer.on');
+    show(null);
+    setTimeout(function(){
+      root.setProperty('--bg', hex(opt('bg') || DEFAULT.bg)); root.setProperty('--fg', hex(opt('fg') || DEFAULT.fg));
+      root.setProperty('--angle', (+opt('angle') || 0) + 'deg'); root.setProperty('--size', (+opt('size') || 15) + 'vmin');
+      document.getElementById('mark').style.display = (String(opt('logo')) === 'false') ? 'none' : '';
+      if (mode === 'image' && cfg.image){
+        var img = document.querySelector('#image img'); root.setProperty('--fit', cfg.fit || 'cover');
+        img.onload = function(){ show('image'); };
+        if (img.src.indexOf(cfg.image) >= 0 && img.complete) show('image'); else img.src = cfg.image;
+      } else if (mode === 'black'){
+        root.setProperty('--bg', '#000');
+      } else {
+        buildRows(); requestAnimationFrame(function(){ show('led'); });
+      }
+      status(mode + ' · v' + (cfg.version || 0) + ' · ' + new Date().toLocaleTimeString());
+    }, wasOn ? 1400 : 0);
+  }
+
+  function load(){
+    var x = new XMLHttpRequest();
+    x.open('GET', 'config.json?t=' + Date.now());
+    x.timeout = 15000;
+    x.onload = function(){
+      try { if (x.status === 200){ cfg = JSON.parse(x.responseText); apply(); return; } } catch(e){}
+      if (!cfg){ cfg = DEFAULT; apply(); }
+    };
+    x.onerror = x.ontimeout = function(){ if (!cfg){ cfg = DEFAULT; apply(); } status('offline · keeping last content'); };
+    x.send();
+  }
+
+  document.fonts.load('100px Higed').then(load, load);
+  setInterval(load, 60*1000);                                   // check for changes every minute
+  setTimeout(function(){ location.reload(); }, 6*3600*1000);    // fresh start every 6 hours
+  var t; addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(function(){ applied = ''; apply(); }, 300); });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kacha Haus Screen</title>
+<style>
+@font-face{font-family:"Higed";src:url(fonts/higed.ttf) format("truetype");font-display:block}
+:root{--bg:#12131c;--fg:#f1f1f6;--angle:-48deg;--size:15vmin;--stroke:.022em}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);cursor:none;color-scheme:dark}
+body{color:var(--fg);font-family:"Higed",Impact,sans-serif;transition:background-color 1.4s cubic-bezier(.22,1,.36,1)}
+.layer{position:fixed;inset:0;opacity:0;transition:opacity 1.4s cubic-bezier(.22,1,.36,1)}
+.layer.on{opacity:1}
+#stage{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(var(--angle));display:flex;flex-direction:column;justify-content:center}
+.row{height:calc(var(--size)*.86);overflow:visible;white-space:nowrap;line-height:1}
+.track{display:inline-flex;will-change:transform;font-size:var(--size);text-transform:uppercase;animation:run var(--dur) linear infinite}
+.row.rev .track{animation-direction:reverse}
+@keyframes run{from{transform:translate3d(0,0,0)}to{transform:translate3d(calc(var(--w)*-1),0,0)}}
+.track span{padding-right:.32em;display:inline-block;transform:translateY(-.06em)}
+.o{color:transparent;-webkit-text-stroke:var(--stroke) var(--fg)}
+.f{color:var(--fg)}
+#mark{position:absolute;left:50%;top:50%;width:min(50vmin,50vmax);transform:translate(-50%,-50%)}
+#mark svg{display:block;width:100%;height:auto;overflow:visible}
+#mark .halo{fill:var(--bg);stroke:var(--bg)}
+#mark .ink{fill:var(--fg)}
+#image{background:#000}
+#image img{width:100%;height:100%;object-fit:var(--fit,cover);display:block}
+#status{position:fixed;right:12px;bottom:10px;font:11px/1 system-ui,sans-serif;color:var(--fg);opacity:0;transition:opacity .6s}
+body.debug #status{opacity:.5}
+</style>
+</head>
+<body>
+<div id="led" class="layer">
+  <div id="stage"></div>
+  <div id="mark">
+    <svg viewBox="0 0 2010 2000" aria-label="Kacha Haus">
+      <path class="halo" d="M 1177.66 588.31 C 1061.05 581.71 952.39 680.2 963.89 815.42 C 969.16 877.43 1005.14 929.46 1050.1 965.6 C 1206.8 1091.55 1467.98 1099.68 1689.36 1331.71 C 1732.76 1377.21 1763.06 1436.05 1773.1 1502.96 C 1807.93 1735.23 1575.74 1876.75 1442.28 1936.36 C 1278.12 2009.68 1066.49 2028.45 954.98 1945.54 C 906.27 1909.33 871.33 1854.6 861.61 1789.84 C 832.59 1596.28 1107.78 1485.43 1119.61 1319.83 C 1124.65 1249.19 1084.9 1163.4 963.89 1145.82 C 834.94 1127.09 657.35 1125.54 512.47 1288.07 C 367.6 1450.59 407.35 1576.09 342.86 1637.94 C 287.62 1690.92 202.15 1651.78 190.8 1576.09 C 176.38 1479.98 194.16 1364.94 253.54 1230.0 C 314.54 1091.4 430.06 956.93 416.91 869.27 C 410.76 828.23 372.5 799.96 331.46 806.11 C 224.23 822.2 194.33 926.17 137.19 985.06 C 125.93 996.67 110.91 1004.81 93.68 1007.39 C 76.45 1009.98 -46.98 1024.29 19.5 751.45 C 85.99 478.62 262.3 242.96 505.71 102.29 C 749.13 -38.38 868.51 -5.42 916.18 34.34 C 956.81 68.24 963.89 124.46 924.6 171.19 C 896.91 204.12 746.84 272.83 682.96 456.67 C 616.39 648.27 644.16 810.79 652.93 869.27 C 661.7 927.76 700.45 980.54 758.93 971.76 C 803.93 965.01 818.3 924.01 824.38 881.53 C 840.79 766.87 777.19 602.72 862.29 417.79 C 942.83 242.76 1107.87 130.65 1293.06 113.16 C 1458.35 97.55 1683.65 154.5 1841.96 370.08 C 1956.79 526.47 2027.43 692.14 2006.26 859.56 C 1992.08 971.76 1929.41 1112.24 1749.2 1145.82 C 1568.99 1179.39 1426.09 1024.77 1394.08 869.27 C 1362.08 713.77 1351.68 598.16 1177.66 588.31 Z" stroke-width="280" stroke-linejoin="round"/>
+      <path class="ink" d="M 1177.66 588.31 C 1061.05 581.71 952.39 680.2 963.89 815.42 C 969.16 877.43 1005.14 929.46 1050.1 965.6 C 1206.8 1091.55 1467.98 1099.68 1689.36 1331.71 C 1732.76 1377.21 1763.06 1436.05 1773.1 1502.96 C 1807.93 1735.23 1575.74 1876.75 1442.28 1936.36 C 1278.12 2009.68 1066.49 2028.45 954.98 1945.54 C 906.27 1909.33 871.33 1854.6 861.61 1789.84 C 832.59 1596.28 1107.78 1485.43 1119.61 1319.83 C 1124.65 1249.19 1084.9 1163.4 963.89 1145.82 C 834.94 1127.09 657.35 1125.54 512.47 1288.07 C 367.6 1450.59 407.35 1576.09 342.86 1637.94 C 287.62 1690.92 202.15 1651.78 190.8 1576.09 C 176.38 1479.98 194.16 1364.94 253.54 1230.0 C 314.54 1091.4 430.06 956.93 416.91 869.27 C 410.76 828.23 372.5 799.96 331.46 806.11 C 224.23 822.2 194.33 926.17 137.19 985.06 C 125.93 996.67 110.91 1004.81 93.68 1007.39 C 76.45 1009.98 -46.98 1024.29 19.5 751.45 C 85.99 478.62 262.3 242.96 505.71 102.29 C 749.13 -38.38 868.51 -5.42 916.18 34.34 C 956.81 68.24 963.89 124.46 924.6 171.19 C 896.91 204.12 746.84 272.83 682.96 456.67 C 616.39 648.27 644.16 810.79 652.93 869.27 C 661.7 927.76 700.45 980.54 758.93 971.76 C 803.93 965.01 818.3 924.01 824.38 881.53 C 840.79 766.87 777.19 602.72 862.29 417.79 C 942.83 242.76 1107.87 130.65 1293.06 113.16 C 1458.35 97.55 1683.65 154.5 1841.96 370.08 C 1956.79 526.47 2027.43 692.14 2006.26 859.56 C 1992.08 971.76 1929.41 1112.24 1749.2 1145.82 C 1568.99 1179.39 1426.09 1024.77 1394.08 869.27 C 1362.08 713.77 1351.68 598.16 1177.66 588.31 Z"/>
+    </svg>
+  </div>
+</div>
+<div id="image" class="layer"><img alt=""></div>
+<div id="status"></div>
+<script>
+/* Kacha Haus in-store screen.
+   Reads config.json every minute; change that file (on GitHub) and the screen follows within ~1-2 min.
+   URL options override the config for testing: ?bg=12131c&fg=f1f1f6&angle=-48&size=15&speed=12&mode=led&debug=1 */
+(function(){
+  var q = new URLSearchParams(location.search), root = document.documentElement.style;
+  if (q.get('debug')) document.body.classList.add('debug');
+  var DEFAULT = {mode:'led', bg:'#12131c', fg:'#f1f1f6', angle:-48, size:15, speed:12, logo:true, rows:[
+    'ONLY *CUP NO CAP KACHA HAUS', 'ABSOLUTELY *DESIGNED LOVE YOU CUP', '*IF I WERE YOU I WOULD DRINK',
+    'MYSELF TOO *KACHA HAUS ONLY CUP', 'LOVE YOU *CUP NO CAP', 'KACHA HAUS *ABSOLUTELY DESIGNED',
+    'I WOULD *DRINK MYSELF TOO', 'NO *CAP ONLY CUP IF I WERE YOU', '*KACHA *HAUS LOVE YOU CUP', 'ABSOLUTELY DESIGNED *MYSELF TOO']};
+  var cfg = null, applied = '', stage = document.getElementById('stage');
+
+  function opt(k){ var v = q.get(k); return v === null ? cfg[k] : v; }
+  function hex(v){ v = String(v); return v.charAt(0) === '#' ? v : '#' + v; }
+  function status(t){ document.getElementById('status').textContent = t; }
+
+  function buildRows(){
+    stage.innerHTML = '';
+    var rows = (cfg.rows || DEFAULT.rows).map(function(line){
+      return String(line).split(/\s+/).filter(Boolean).map(function(w){ return w.charAt(0) === '*' ? [w.slice(1), 1] : [w, 0]; });
+    }).filter(function(r){ return r.length; });
+    if (!rows.length) return;
+    var W = innerWidth, H = innerHeight, diag = Math.ceil(Math.hypot(W, H)) + 40;
+    stage.style.width = diag + 'px'; stage.style.height = diag + 'px';
+    var probe = document.createElement('div'); probe.className = 'row'; stage.appendChild(probe);
+    var rowH = probe.offsetHeight || W*.1; stage.removeChild(probe);
+    var n = Math.ceil(diag/rowH) + 2, scale = Math.min(W, H)/1080, speed = +opt('speed') || 12;
+    for (var i = 0; i < n; i++){
+      var words = rows[i % rows.length], row = document.createElement('div'), tr = document.createElement('div');
+      row.className = 'row' + (i % 2 ? ' rev' : ''); tr.className = 'track'; row.appendChild(tr); stage.appendChild(row);
+      var shift = (i*3) % words.length, seq = words.slice(shift).concat(words.slice(0, shift));
+      var unit = document.createElement('div'); unit.style.display = 'inline-flex';
+      seq.forEach(function(w){ var s = document.createElement('span'); s.className = w[1] ? 'f' : 'o'; s.textContent = w[0]; unit.appendChild(s); });
+      tr.appendChild(unit);
+      var base = unit.innerHTML, guard = 0;
+      while (unit.offsetWidth < diag && guard++ < 20) unit.innerHTML += base;
+      var w = unit.offsetWidth; tr.appendChild(unit.cloneNode(true));
+      var v = speed*scale*(0.85 + ((i*7) % 5)*0.075);
+      tr.style.setProperty('--w', w + 'px'); tr.style.setProperty('--dur', (w/v).toFixed(2) + 's');
+      tr.style.animationDelay = (-(i*1.37) % (w/v)).toFixed(2) + 's';
+    }
+  }
+
+  function show(id){
+    ['led','image'].forEach(function(k){ document.getElementById(k).classList.toggle('on', k === id); });
+  }
+
+  // Fade the current content out, swap, fade back in (no flashes: the background colour eases too)
+  function apply(){
+    var key = JSON.stringify(cfg) + location.search + innerWidth + 'x' + innerHeight;
+    if (key === applied) return; applied = key;
+    var mode = opt('mode') || 'led', wasOn = !!document.querySelector('.layer.on');
+    show(null);
+    setTimeout(function(){
+      root.setProperty('--bg', hex(opt('bg') || DEFAULT.bg)); root.setProperty('--fg', hex(opt('fg') || DEFAULT.fg));
+      root.setProperty('--angle', (+opt('angle') || 0) + 'deg'); root.setProperty('--size', (+opt('size') || 15) + 'vmin');
+      document.getElementById('mark').style.display = (String(opt('logo')) === 'false') ? 'none' : '';
+      if (mode === 'image' && cfg.image){
+        var img = document.querySelector('#image img'); root.setProperty('--fit', cfg.fit || 'cover');
+        img.onload = function(){ show('image'); };
+        if (img.src.indexOf(cfg.image) >= 0 && img.complete) show('image'); else img.src = cfg.image;
+      } else if (mode === 'black'){
+        root.setProperty('--bg', '#000');
+      } else {
+        buildRows(); requestAnimationFrame(function(){ show('led'); });
+      }
+      status(mode + ' · v' + (cfg.version || 0) + ' · ' + new Date().toLocaleTimeString());
+    }, wasOn ? 1400 : 0);
+  }
+
+  function load(){
+    var x = new XMLHttpRequest();
+    x.open('GET', 'config.json?t=' + Date.now());
+    x.timeout = 15000;
+    x.onload = function(){
+      try { if (x.status === 200){ cfg = JSON.parse(x.responseText); apply(); return; } } catch(e){}
+      if (!cfg){ cfg = DEFAULT; apply(); }
+    };
+    x.onerror = x.ontimeout = function(){ if (!cfg){ cfg = DEFAULT; apply(); } status('offline · keeping last content'); };
+    x.send();
+  }
+
+  document.fonts.load('100px Higed').then(load, load);
+  setInterval(load, 60*1000);                                   // check for changes every minute
+  setTimeout(function(){ location.reload(); }, 6*3600*1000);    // fresh start every 6 hours
+  var t; addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(function(){ applied = ''; apply(); }, 300); });
+})();
+</script>
+</body>
+</html>
