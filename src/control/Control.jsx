@@ -7,6 +7,8 @@ const auth = getAuth(app)
 // dev only: ?demo shows the editor without signing in and never saves
 const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
 const SCENES = [
+  { type: 'portal', name: 'Portal Title', sub: 'ตัวอักษร 3D ทะลุประตูระเบิด (HyperFrames)', seconds: 16 },
+  { type: 'glass', name: 'Glass Shards', sub: 'เศษกระจก 3D ประกอบเป็นคำ (HyperFrames)', seconds: 12 },
   { type: 'hyper', name: 'Hyper (HyperFrames)', sub: 'สไตล์โชว์จอ LED: คำกระแทก เหวี่ยง หมุน + เบลอ', seconds: 16 },
   { type: 'ramp', name: 'Speed Ramp', sub: 'คำพุ่งเข้า-ช้า-พุ่งออก + เบลอตามความเร็ว', seconds: 20 },
   { type: 'type', name: 'Type (GSAP)', sub: 'คำใหญ่ทีละคำ 15 ท่า + กำแพงคำหมุน', seconds: 60 },
@@ -40,6 +42,7 @@ function normalise (c) {
     stretch: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'ABSOLUTELY', 'DESIGNED'], ...(c.stretch || {}) },
     beat: { lines: ['IF I', 'WERE / YOU', 'I WOULD', 'DRINK', 'MYSELF', 'TOO'], ...(c.beat || {}) },
     windows: { words: ['KACHA', 'HAUS'], ...(c.windows || {}) },
+    blocks: { portal: { title: 'KACHA', replacementPhrase: 'Only cup no cap', subtitle: 'CHINESE MILK TEA', accent: '#F5C518', ...((c.blocks || {}).portal || {}) }, glass: { headline: 'Kacha Haus', ...((c.blocks || {}).glass || {}) } },
     hyper: { slamA: ['ONLY', '*CUP', 'NO', '*CAP', 'KACHA', '*HAUS'], shutter: 'KACHA', headline: 'MILK *TEA', explode: 'ABSOLUTELY', slamB: ['LOVE', 'YOU', '*CUP'], accent: '#FFD700', ...(c.hyper || {}) },
     ramp: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED'], font: 'archivo', drift: 1.3, ...(c.ramp || {}) },
     type: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED', 'LOVE YOU', 'CUP'], font: 'archivo', hold: 1.1, ...(c.type || {}) },
@@ -151,6 +154,17 @@ export default function Control () {
             <div className="c-seg">{[['cover', 'เต็มจอ'], ['contain', 'เห็นทั้งรูป']].map(([k, l]) => <button key={k} className={cfg.fit === k ? 'on' : ''} onClick={() => update({ fit: k })}>{l}</button>)}</div>
           </>
         )}
+      </section>
+
+      <section className="c-card">
+        <h2>Portal Title · Glass Shards <small>(3D หนัก ดูว่าจอไหวไหม)</small></h2>
+        <div className="c-row2">
+          <label className="c-field">Portal คำแรก (≤18)<input defaultValue={cfg.blocks.portal.title} maxLength={18} onChange={e => update(p => ({ blocks: { ...p.blocks, portal: { ...p.blocks.portal, title: e.target.value.toUpperCase() } } }))} /></label>
+          <label className="c-field">Portal คำที่สลับเข้า<input defaultValue={cfg.blocks.portal.replacementPhrase} onChange={e => update(p => ({ blocks: { ...p.blocks, portal: { ...p.blocks.portal, replacementPhrase: e.target.value } } }))} /></label>
+          <label className="c-field">Portal บรรทัดล่าง<input defaultValue={cfg.blocks.portal.subtitle} onChange={e => update(p => ({ blocks: { ...p.blocks, portal: { ...p.blocks.portal, subtitle: e.target.value.toUpperCase() } } }))} /></label>
+          <label className="c-field">Portal สีเน้น<input type="color" value={cfg.blocks.portal.accent} onChange={e => update(p => ({ blocks: { ...p.blocks, portal: { ...p.blocks.portal, accent: e.target.value } } }))} /></label>
+          <label className="c-field">Glass คำ (≤40)<input defaultValue={cfg.blocks.glass.headline} maxLength={40} onChange={e => update(p => ({ blocks: { ...p.blocks, glass: { headline: e.target.value } } }))} /></label>
+        </div>
       </section>
 
       <section className="c-card">

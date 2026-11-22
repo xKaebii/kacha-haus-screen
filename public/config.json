@@ -1,7 +1,15 @@
 {
-  "version": 10,
+  "version": 11,
   "mode": "playlist",
   "scenes": [
+    {
+      "type": "portal",
+      "seconds": 16
+    },
+    {
+      "type": "glass",
+      "seconds": 12
+    },
     {
       "type": "hyper",
       "seconds": 16
@@ -127,5 +135,16 @@
       "*CUP"
     ],
     "accent": "#FFD700"
+  },
+  "blocks": {
+    "portal": {
+      "title": "KACHA",
+      "replacementPhrase": "Only cup no cap",
+      "subtitle": "CHINESE MILK TEA",
+      "accent": "#F5C518"
+    },
+    "glass": {
+      "headline": "Kacha Haus"
+    }
   }
 }

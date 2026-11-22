@@ -8,6 +8,8 @@
 | type | ฉาก | จุดหักมุม |
 |---|---|---|
 | `led` | ป้าย LED เดิม: คำเฉียงวิ่งสวนกัน + โลโก้กลาง | – |
+| `portal` | **Portal Title** (HyperFrames block): ตัวอักษร 3D เส้นโครงทะลุประตูที่ระเบิดออก แล้วตัวอักษรสลับเป็นอีกประโยค มีกลิตช์ตอนลง · 8 วิ วนซ้ำ | `blocks.portal.title` (≤18), `replacementPhrase`, `subtitle`, `accent` |
+| `glass` | **Glass Shards** (HyperFrames block): เศษกระจก 3D บินฝ่าหมอกมาประกอบเป็นคำ แล้วบินผ่านกล้องออก · 12 วิ | `blocks.glass.headline` (≤40) |
 | `hyper` | **Hyper** สไตล์คลิปโชว์จอ LED: คำกระแทกทีละคำ (คำ `*` เป็นสีเน้น) → คำถูกเหวี่ยง ตบ หมุน 3 แกน → หัวข้อกระแทกพร้อมสั่น 3 เฟรม → ตัวอักษรแตกแล้วรวม → โลโก้ + วงแหวน · เบลอตามความเร็ว (พอร์ตจาก HyperFrames ด้านล่าง) | ตั้งค่า `hyper.slamA`, `shutter`, `headline`, `explode`, `slamB`, `accent` |
 | `ramp` | **Speed Ramp** (GSAP ล้วน) คำพุ่งเข้าเร็วมาก ผ่อนจนเกือบหยุดให้อ่าน แล้วพุ่งออก (ความเร็วรูปตัว U) เบลอและยืดตามความเร็ว · สลับทิศ ขวา/ซ้าย/ล่าง/ซูมทะลุ · จบด้วยโลโก้ | ตั้งค่า `ramp.words`, `ramp.font`, `ramp.drift` |
 | `type` | **Type (GSAP ล้วน)** คำใหญ่ทีละคำ แต่ละคำเข้าด้วยท่าต่างกัน 15 ท่า ทุก 4 คำมีกำแพงคำหมุน −90° (พอร์ตจาก Codrops ด้านล่าง) | – |
@@ -55,3 +57,4 @@ npm run build      # dist/ + build.json
 - ตั้งค่าใน config: `kinetic.words` (4 คำ), `kinetic.palette` (`original` / `brand`), `kinetic.font` (`original` / `higed`), `kinetic.hold` (วินาทีที่ค้างแต่ละรูปทรง)
 - ฉาก `type` พอร์ตจาก Codrops **On-Scroll Typography Animations** (https://github.com/codrops/OnScrollTypographyAnimations) และ **Kinetic Type Page Transition** (https://github.com/codrops/KineticTypePageTransition) · MIT License, Copyright (c) Codrops · ต้นฉบับขยับตามการเลื่อนหน้า ที่นี่เล่นตามเวลา · ตั้งค่า `type.words`, `type.font` (`archivo` / `higed`), `type.hold`
 - ฉาก `hyper` พอร์ตจาก **HyperFrames** โดย HeyGen (https://github.com/heygen-com/hyperframes) · Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0) · ใช้คอมโพเนนต์ caption-kinetic-slam, shutter-slam, headline-slam, char-slam-explode, logo-sting · สิ่งที่เปลี่ยน: คำ/โลโก้ของร้าน, จัดสำหรับจอแนวตั้ง, เบลอคิดจากความเร็วจริงแทนการเรนเดอร์ shutter, ตัดแฟลชขาว 1 เฟรมของ logo-sting ออก
+- ฉาก `portal` / `glass` = HyperFrames blocks **wireframe-portal-title** และ **glass-shard-title** (Apache License 2.0) เก็บไว้ทั้งไฟล์ใน `public/blocks/` · สิ่งที่เปลี่ยน: เพิ่ม shim อ่านตัวแปรจาก URL, เล่นวนเอง (portal), เปลี่ยนคำ kicker เป็น KACHA HAUS PRESENTS, ทำ `portrait.html` (และ `glass-main-portrait.js`) ที่สลับเฟรมเป็น 1080×1920 · ใช้ Three.js / GSAP / clipper-lib / d3-delaunay จาก jsDelivr · ฟอนต์ Geist และ Cormorant Garamond (SIL OFL, ไฟล์ไลเซนส์อยู่ใน assets/fonts) · Three.js MIT (assets/Three-LICENSE.txt)
