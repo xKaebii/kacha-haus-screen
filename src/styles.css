@@ -37,3 +37,10 @@ body { color: var(--fg); font-family: "Higed", Impact, sans-serif; transition: b
 .ty-wrap { overflow: hidden; vertical-align: top }
 .ty-char { display: inline-block; will-change: transform, opacity }
 .ty-space { display: inline-block; width: .28em }
+
+/* RAMP scene */
+.rp { background: var(--bg); color: var(--fg); overflow: hidden }
+.rp-stage { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center }
+.rp-word { white-space: nowrap; line-height: 1; text-transform: uppercase; filter: url(#rp-blur); will-change: transform, filter }
+.rp-logo { width: 4.2em; height: auto; display: block }
+.rp-text { display: inline-block }

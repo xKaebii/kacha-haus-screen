@@ -7,6 +7,7 @@ const auth = getAuth(app)
 // dev only: ?demo shows the editor without signing in and never saves
 const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
 const SCENES = [
+  { type: 'ramp', name: 'Speed Ramp', sub: 'คำพุ่งเข้า-ช้า-พุ่งออก + เบลอตามความเร็ว', seconds: 20 },
   { type: 'type', name: 'Type (GSAP)', sub: 'คำใหญ่ทีละคำ 15 ท่า + กำแพงคำหมุน', seconds: 60 },
   { type: 'kinetic', name: 'Kinetic 3D', sub: '4 รูปทรงหมุนต่อกัน (Codrops)', seconds: 30 },
   { type: 'endless', name: 'Kinetic · Endless', sub: 'ปมคำ', seconds: 15 },
@@ -38,6 +39,7 @@ function normalise (c) {
     stretch: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'ABSOLUTELY', 'DESIGNED'], ...(c.stretch || {}) },
     beat: { lines: ['IF I', 'WERE / YOU', 'I WOULD', 'DRINK', 'MYSELF', 'TOO'], ...(c.beat || {}) },
     windows: { words: ['KACHA', 'HAUS'], ...(c.windows || {}) },
+    ramp: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED'], font: 'archivo', drift: 1.3, ...(c.ramp || {}) },
     type: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED', 'LOVE YOU', 'CUP'], font: 'archivo', hold: 1.1, ...(c.type || {}) },
     kinetic: { words: ['KACHA', 'HAUS', 'NO CAP', 'ONLY CUP'], palette: 'original', font: 'original', hold: 6, ...(c.kinetic || {}) }
   }
@@ -147,6 +149,15 @@ export default function Control () {
             <div className="c-seg">{[['cover', 'เต็มจอ'], ['contain', 'เห็นทั้งรูป']].map(([k, l]) => <button key={k} className={cfg.fit === k ? 'on' : ''} onClick={() => update({ fit: k })}>{l}</button>)}</div>
           </>
         )}
+      </section>
+
+      <section className="c-card">
+        <h2>Speed Ramp</h2>
+        <label className="c-field">คำ · หนึ่งบรรทัด = หนึ่งคำ (จบด้วยโลโก้)
+          <textarea rows="6" defaultValue={cfg.ramp.words.join('\n')} onChange={e => update(p => ({ ramp: { ...p.ramp, words: lines(e.target.value.toUpperCase()) } }))} />
+        </label>
+        <div className="c-seg">{[['archivo', 'Archivo Black'], ['higed', 'Higed']].map(([k, l]) => <button key={k} className={cfg.ramp.font === k ? 'on' : ''} onClick={() => update(p => ({ ramp: { ...p.ramp, font: k } }))}>{l}</button>)}</div>
+        <Slider label="ช่วงช้า (อ่านทัน)" v={cfg.ramp.drift} min={0.4} max={3} step={0.1} unit=" วิ" on={v => update(p => ({ ramp: { ...p.ramp, drift: v } }))} />
       </section>
 
       <section className="c-card">

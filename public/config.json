@@ -1,7 +1,11 @@
 {
-  "version": 8,
+  "version": 9,
   "mode": "playlist",
   "scenes": [
+    {
+      "type": "ramp",
+      "seconds": 20
+    },
     {
       "type": "type",
       "seconds": 60
@@ -86,5 +90,19 @@
     ],
     "font": "archivo",
     "hold": 1.1
+  },
+  "ramp": {
+    "words": [
+      "KACHA",
+      "HAUS",
+      "ONLY CUP",
+      "NO CAP",
+      "CHINESE",
+      "MILK TEA",
+      "ABSOLUTELY",
+      "DESIGNED"
+    ],
+    "font": "archivo",
+    "drift": 1.3
   }
 }
