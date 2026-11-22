@@ -7,6 +7,7 @@ const auth = getAuth(app)
 // dev only: ?demo shows the editor without signing in and never saves
 const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
 const SCENES = [
+  { type: 'video', name: 'วิดีโอ (Portal)', sub: 'คลิปที่เรนเดอร์ไว้ เล่นวน เบาสุด', seconds: 16 },
   { type: 'portal', name: 'Portal Title', sub: 'ตัวอักษร 3D ทะลุประตูระเบิด (HyperFrames)', seconds: 16 },
   { type: 'glass', name: 'Glass Shards', sub: 'เศษกระจก 3D ประกอบเป็นคำ (HyperFrames)', seconds: 12 },
   { type: 'hyper', name: 'Hyper (HyperFrames)', sub: 'สไตล์โชว์จอ LED: คำกระแทก เหวี่ยง หมุน + เบลอ', seconds: 16 },
@@ -42,6 +43,7 @@ function normalise (c) {
     stretch: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'ABSOLUTELY', 'DESIGNED'], ...(c.stretch || {}) },
     beat: { lines: ['IF I', 'WERE / YOU', 'I WOULD', 'DRINK', 'MYSELF', 'TOO'], ...(c.beat || {}) },
     windows: { words: ['KACHA', 'HAUS'], ...(c.windows || {}) },
+    video: { src: 'videos/portal.mp4', fit: 'cover', ...(c.video || {}) },
     blocks: { portal: { title: 'KACHA', replacementPhrase: 'Only cup no cap', subtitle: 'CHINESE MILK TEA', accent: '#F5C518', ...((c.blocks || {}).portal || {}) }, glass: { headline: 'Kacha Haus', ...((c.blocks || {}).glass || {}) } },
     hyper: { slamA: ['ONLY', '*CUP', 'NO', '*CAP', 'KACHA', '*HAUS'], shutter: 'KACHA', headline: 'MILK *TEA', explode: 'ABSOLUTELY', slamB: ['LOVE', 'YOU', '*CUP'], accent: '#FFD700', ...(c.hyper || {}) },
     ramp: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED'], font: 'higed', drift: 1.3, ...(c.ramp || {}) },
@@ -138,9 +140,9 @@ export default function Control () {
         {cfg.mode === 'playlist' && (
           <ul className="c-list">
             {cfg.scenes.map((s, i) => (
-              <li key={s.type} className={s.off ? 'off' : ''}>
+              <li key={i} className={s.off ? 'off' : ''}>
                 <label className="c-switch"><input type="checkbox" checked={!s.off} onChange={e => setScene(i, { off: !e.target.checked })} /><span /></label>
-                <div className="c-grow"><b>{NAME[s.type]}</b><small>{SCENES.find(x => x.type === s.type).sub}</small></div>
+                <div className="c-grow"><b>{NAME[s.type]}</b><small>{s.type === 'video' && s.src ? s.src.replace(/^.*\//, '') : SCENES.find(x => x.type === s.type).sub}</small></div>
                 <input className="c-num" type="number" min="5" max="600" step="0.5" value={s.seconds} onChange={e => setScene(i, { seconds: +e.target.value || 10 })} /><small>วิ</small>
                 <button className="c-ico" onClick={() => move(i, -1)} aria-label="ขึ้น">↑</button>
                 <button className="c-ico" onClick={() => move(i, 1)} aria-label="ลง">↓</button>
@@ -154,6 +156,12 @@ export default function Control () {
             <div className="c-seg">{[['cover', 'เต็มจอ'], ['contain', 'เห็นทั้งรูป']].map(([k, l]) => <button key={k} className={cfg.fit === k ? 'on' : ''} onClick={() => update({ fit: k })}>{l}</button>)}</div>
           </>
         )}
+      </section>
+
+      <section className="c-card">
+        <h2>วิดีโอ</h2>
+        <label className="c-field">ไฟล์วิดีโอ (path ใน repo หรือลิงก์ https)<input defaultValue={cfg.video.src} onChange={e => update(p => ({ video: { ...p.video, src: e.target.value.trim() } }))} /></label>
+        <div className="c-seg">{[['cover', 'เต็มจอ'], ['contain', 'เห็นทั้งคลิป']].map(([k, l]) => <button key={k} className={cfg.video.fit === k ? 'on' : ''} onClick={() => update(p => ({ video: { ...p.video, fit: k } }))}>{l}</button>)}</div>
       </section>
 
       <section className="c-card">

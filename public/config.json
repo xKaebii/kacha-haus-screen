@@ -1,6 +1,6 @@
 {
-  "version": 13,
-  "mode": "playlist",
+  "version": 14,
+  "mode": "video",
   "scenes": [
     {
       "type": "portal",
@@ -147,5 +147,9 @@
       "headline": "Kacha Haus"
     }
   },
-  "logoStyle": "glass"
+  "logoStyle": "glass",
+  "video": {
+    "src": "videos/portal.mp4",
+    "fit": "cover"
+  }
 }

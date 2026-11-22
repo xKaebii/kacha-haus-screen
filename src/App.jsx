@@ -9,9 +9,10 @@ import Type from './scenes/Type.jsx'
 import Ramp from './scenes/Ramp.jsx'
 import Hyper from './scenes/Hyper.jsx'
 import Block from './scenes/Block.jsx'
+import Video from './scenes/Video.jsx'
 import { watchConfig } from './lib/firebase.js'
 
-const SCENES = { led: Led, portal: Block, glass: Block, hyper: Hyper, ramp: Ramp, type: Type, kinetic: Kinetic, endless: Kinetic, swirl: Kinetic, twisted: Kinetic, relax: Kinetic, stretch: Stretch, tunnel: Tunnel, beat: Beat, windows: Windows }
+const SCENES = { led: Led, video: Video, portal: Block, glass: Block, hyper: Hyper, ramp: Ramp, type: Type, kinetic: Kinetic, endless: Kinetic, swirl: Kinetic, twisted: Kinetic, relax: Kinetic, stretch: Stretch, tunnel: Tunnel, beat: Beat, windows: Windows }
 const q = new URLSearchParams(location.search)
 const FADE = 1200
 
