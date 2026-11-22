@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "mode": "led",
   "bg": "#12131c",
   "fg": "#f1f1f6",
@@ -20,5 +20,9 @@
     "ABSOLUTELY DESIGNED *MYSELF TOO"
   ],
   "image": "",
-  "fit": "cover"
+  "fit": "cover",
+  "guides": true,
+  "logoX": 0,
+  "logoY": 0,
+  "logoSize": 50
 }
