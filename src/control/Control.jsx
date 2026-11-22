@@ -44,9 +44,9 @@ function normalise (c) {
     windows: { words: ['KACHA', 'HAUS'], ...(c.windows || {}) },
     blocks: { portal: { title: 'KACHA', replacementPhrase: 'Only cup no cap', subtitle: 'CHINESE MILK TEA', accent: '#F5C518', ...((c.blocks || {}).portal || {}) }, glass: { headline: 'Kacha Haus', ...((c.blocks || {}).glass || {}) } },
     hyper: { slamA: ['ONLY', '*CUP', 'NO', '*CAP', 'KACHA', '*HAUS'], shutter: 'KACHA', headline: 'MILK *TEA', explode: 'ABSOLUTELY', slamB: ['LOVE', 'YOU', '*CUP'], accent: '#FFD700', ...(c.hyper || {}) },
-    ramp: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED'], font: 'archivo', drift: 1.3, ...(c.ramp || {}) },
-    type: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED', 'LOVE YOU', 'CUP'], font: 'archivo', hold: 1.1, ...(c.type || {}) },
-    kinetic: { words: ['KACHA', 'HAUS', 'NO CAP', 'ONLY CUP'], palette: 'original', font: 'original', hold: 6, ...(c.kinetic || {}) }
+    ramp: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED'], font: 'higed', drift: 1.3, ...(c.ramp || {}) },
+    type: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED', 'LOVE YOU', 'CUP'], font: 'higed', hold: 1.1, ...(c.type || {}) },
+    kinetic: { words: ['KACHA', 'HAUS', 'NO CAP', 'ONLY CUP'], palette: 'original', font: 'higed', hold: 6, ...(c.kinetic || {}) }
   }
 }
 

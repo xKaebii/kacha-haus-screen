@@ -1,5 +1,5 @@
 {
-  "version": 11,
+  "version": 12,
   "mode": "playlist",
   "scenes": [
     {
@@ -84,7 +84,7 @@
       "ONLY CUP"
     ],
     "palette": "original",
-    "font": "original",
+    "font": "higed",
     "hold": 6
   },
   "type": {
@@ -100,7 +100,7 @@
       "LOVE YOU",
       "CUP"
     ],
-    "font": "archivo",
+    "font": "higed",
     "hold": 1.1
   },
   "ramp": {
@@ -114,7 +114,7 @@
       "ABSOLUTELY",
       "DESIGNED"
     ],
-    "font": "archivo",
+    "font": "higed",
     "drift": 1.3
   },
   "hyper": {

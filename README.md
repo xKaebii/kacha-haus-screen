@@ -51,10 +51,13 @@ npm run build      # dist/ + build.json
 - ฉากอยู่ใน `src/scenes/` · สี/ฟอนต์/โลโก้/ease ใน `src/lib/brand.js`
 - ฟอนต์ Higed © arijuanda (All Rights Reserved) — ยังต้องเช็กไลเซนส์การใช้งาน
 
+## ฟอนต์
+ทุกฉากใช้ **Higed** (ฟอนต์ร้าน) เป็นค่าเริ่มต้น · ฉาก Type / Speed Ramp / Kinetic 3D สลับกลับเป็นฟอนต์ต้นฉบับได้ในหน้า control
+
 ## เครดิต
 - ฉาก `kinetic` / `endless` / `swirl` / `twisted` / `relax` พอร์ตจาก **Kinetic Typography with Three.js** โดย Mario Carrillo (marioecg) สำหรับ Codrops (2020) — https://tympanus.net/codrops/2020/06/02/kinetic-typography-with-three-js/ · https://github.com/marioecg/codrops-kinetic-typo · MIT License, Copyright (c) 2009 - 2020 Codrops
 - ฟอนต์ต้นฉบับของฉากนี้: Orbitron, Montserrat Alternates, Archivo Black, Open Sans (SIL Open Font License ผ่าน @fontsource)
 - ตั้งค่าใน config: `kinetic.words` (4 คำ), `kinetic.palette` (`original` / `brand`), `kinetic.font` (`original` / `higed`), `kinetic.hold` (วินาทีที่ค้างแต่ละรูปทรง)
 - ฉาก `type` พอร์ตจาก Codrops **On-Scroll Typography Animations** (https://github.com/codrops/OnScrollTypographyAnimations) และ **Kinetic Type Page Transition** (https://github.com/codrops/KineticTypePageTransition) · MIT License, Copyright (c) Codrops · ต้นฉบับขยับตามการเลื่อนหน้า ที่นี่เล่นตามเวลา · ตั้งค่า `type.words`, `type.font` (`archivo` / `higed`), `type.hold`
 - ฉาก `hyper` พอร์ตจาก **HyperFrames** โดย HeyGen (https://github.com/heygen-com/hyperframes) · Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0) · ใช้คอมโพเนนต์ caption-kinetic-slam, shutter-slam, headline-slam, char-slam-explode, logo-sting · สิ่งที่เปลี่ยน: คำ/โลโก้ของร้าน, จัดสำหรับจอแนวตั้ง, เบลอคิดจากความเร็วจริงแทนการเรนเดอร์ shutter, ตัดแฟลชขาว 1 เฟรมของ logo-sting ออก
-- ฉาก `portal` / `glass` = HyperFrames blocks **wireframe-portal-title** และ **glass-shard-title** (Apache License 2.0) เก็บไว้ทั้งไฟล์ใน `public/blocks/` · สิ่งที่เปลี่ยน: เพิ่ม shim อ่านตัวแปรจาก URL, เล่นวนเอง (portal), เปลี่ยนคำ kicker เป็น KACHA HAUS PRESENTS, ทำ `portrait.html` (และ `glass-main-portrait.js`) ที่สลับเฟรมเป็น 1080×1920 · ใช้ Three.js / GSAP / clipper-lib / d3-delaunay จาก jsDelivr · ฟอนต์ Geist และ Cormorant Garamond (SIL OFL, ไฟล์ไลเซนส์อยู่ใน assets/fonts) · Three.js MIT (assets/Three-LICENSE.txt)
+- ฉาก `portal` / `glass` = HyperFrames blocks **wireframe-portal-title** และ **glass-shard-title** (Apache License 2.0) เก็บไว้ทั้งไฟล์ใน `public/blocks/` · สิ่งที่เปลี่ยน: เพิ่ม shim อ่านตัวแปรจาก URL, เล่นวนเอง (portal), เปลี่ยนคำ kicker เป็น KACHA HAUS PRESENTS, **ฟอนต์ Geist ทั้งหมดเปลี่ยนเป็น Higed** (รวมตัวอักษร 3D ของ portal), ทำ `portrait.html` (ตัวอักษร portal ใหญ่ขึ้น, กลุ่มกระจก glass ขยาย 2.1 เท่า) (และ `glass-main-portrait.js`) ที่สลับเฟรมเป็น 1080×1920 · ใช้ Three.js / GSAP / clipper-lib / d3-delaunay จาก jsDelivr · ฟอนต์ Geist และ Cormorant Garamond (SIL OFL, ไฟล์ไลเซนส์อยู่ใน assets/fonts) · Three.js MIT (assets/Three-LICENSE.txt)

@@ -4,6 +4,7 @@
   data-composition-variables='[{"id":"title","type":"string","label":"Title","default":"BREAKTHROUGH","maxLength":18},{"id":"replacementPhrase","type":"string","label":"3D replacement phrase (auto layout)","default":"Lets do this sir!","description":"Every word is preserved. Whole-word line wrapping and type size adapt to the 3D frame."},{"id":"phraseDuration","type":"number","label":"Phrase transition duration (s)","default":1.85,"min":0.65,"max":2.9,"step":0.05,"unit":"s","description":"Total time for the letter transition, including the stagger. Lower is faster. The opening and white return keep their original timing."},{"id":"phraseEasing","type":"number","label":"Transition easing (1 gentle – 8 snap)","default":8,"min":1,"max":8,"step":0.25,"description":"Higher values keep the beginning slow and concentrate acceleration at the letter swap, then settle gently. 4 is the default."},{"id":"settleGlitch","type":"number","label":"Letter settle glitch strength","default":0.2,"min":0,"max":4,"step":0.05,"description":"Scales the deterministic block glitch and letter jitter around swap and settling. 0 disables it; 4 makes it strongest."},{"id":"depthFog","type":"boolean","label":"Depth fog (early fade always on)","default":true,"description":"Dims receding outlines into the dark scene. Early opacity fades remain active when fog is off."},{"id":"subtitle","type":"string","label":"Subtitle","default":"HYPERFRAMES PORTAL TITLE","maxLength":48},{"id":"accent","type":"color","label":"Accent","default":"#F5C518"},{"id":"burstChaos","type":"number","label":"Burst chaos (0-2)","default":1,"min":0,"max":2,"step":0.01}]'
 >
   <head>
+    <!-- Kacha Haus screen: every "Geist" face (CSS and the 3D letter outlines) now loads the shop's Higed font -->
     <!-- Kacha Haus screen: feed variables from the URL hash (#{"title":"KACHA"}), as HyperFrames would -->
     <script>window.__hyperframes = { getVariables: function () { try { return JSON.parse(decodeURIComponent(location.hash.slice(1)) || "{}") } catch (e) { return {} } } };</script>
 
@@ -23,17 +24,17 @@
     <style>
       @font-face {
         font-family: "Geist";
-        src: url("assets/fonts/Geist-Regular.ttf") format("truetype");
+        src: url("assets/fonts/higed.ttf") format("truetype");
         font-weight: 400;
       }
       @font-face {
         font-family: "Geist";
-        src: url("assets/fonts/Geist-SemiBold.ttf") format("truetype");
+        src: url("assets/fonts/higed.ttf") format("truetype");
         font-weight: 600;
       }
       @font-face {
         font-family: "Geist";
-        src: url("assets/fonts/Geist-Bold.ttf") format("truetype");
+        src: url("assets/fonts/higed.ttf") format("truetype");
         font-weight: 700;
       }
       * {
@@ -81,7 +82,7 @@
       }
       #wpt-kicker {
         font-weight: 600;
-        font-size: 22px;
+        font-size: 32px;
         letter-spacing: 0;
         text-indent: 0;
         color: #1f1f1f;
@@ -92,7 +93,7 @@
       }
       #wpt-headline {
         font-weight: 700;
-        font-size: 176px;
+        font-size: 260px; /* portrait: bigger title (3D letters follow this layout) */
         line-height: 1;
         letter-spacing: 0.03em;
         white-space: nowrap;
@@ -104,7 +105,7 @@
       #wpt-subtitle {
         margin-top: 40px;
         font-weight: 400;
-        font-size: 34px;
+        font-size: 48px;
         letter-spacing: 0.02em;
         color: #3d3d3d;
       }
@@ -808,7 +809,7 @@
         typeof __hyperframes !== "undefined" && __hyperframes.assetUrl
           ? __hyperframes.assetUrl(path)
           : path;
-      const ttfBuffer = await fetch(assetUrl("assets/fonts/Geist-Bold.ttf")).then((r) =>
+      const ttfBuffer = await fetch(assetUrl("assets/fonts/higed.ttf")).then((r) =>
         r.arrayBuffer(),
       );
       const font = new FontLoader().parse(new TTFLoader().parse(ttfBuffer));
@@ -819,8 +820,8 @@
       // Shrink the DOM headline if a long title overflows, BEFORE measuring spans
       for (const id of ["wpt-headline"]) {
         const el = document.getElementById(id);
-        if (el.scrollWidth > 1760) {
-          el.style.fontSize = Math.floor(176 * (1760 / el.scrollWidth)) + "px";
+        if (el.scrollWidth > 980) {
+          el.style.fontSize = Math.floor(260 * (980 / el.scrollWidth)) + "px";
         }
       }
 
@@ -1164,7 +1165,7 @@
           }
           if (line) lines.push(line);
           const widths = lines.map(width);
-          const scale = Math.min(1, 1520 / Math.max(...widths), 620 / (lines.length * 176 * 1.18));
+          const scale = Math.min(1.8, 960 / Math.max(...widths), 1300 / (lines.length * 176 * 1.18)); /* portrait: wider-than-tall frame limits, allow larger type */
           const balance = Math.min(...widths) / Math.max(...widths);
           const score = scale * (0.94 + 0.06 * balance);
           if (!best || score > best.score) best = { lines, widths, scale, score };

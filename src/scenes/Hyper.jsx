@@ -52,7 +52,8 @@ export default function Hyper ({ cfg }) {
       stage.appendChild(el); gsap.set(el, { xPercent: -50, yPercent: -50, left: '50%', top: '50%', autoAlpha: 0 })
       return el
     }
-    const ANTON = '400 {px}px Anton, sans-serif', INTER = '900 {px}px Inter, sans-serif'
+    // the shop's Higed everywhere (the originals use Anton and Inter 900)
+    const ANTON = '{px}px Higed, Anton, sans-serif', INTER = '{px}px Higed, Inter, sans-serif'
     const accent = h.accent
     const tl = gsap.timeline({ repeat: -1 })
     let current = null

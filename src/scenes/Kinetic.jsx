@@ -170,7 +170,7 @@ export default function Kinetic ({ cfg, opts }) {
     const k = cfg.kinetic || {}
     const only = KINETIC_KEYS.indexOf(opts && opts.type)          // a single demo, or -1 = the turning carousel
     const words = k.words || DEMOS.map(d => d.word)
-    const brand = k.palette === 'brand', higed = k.font === 'higed'
+    const brand = k.palette === 'brand', higed = k.font !== 'original'
     const demos = DEMOS.map((d, i) => ({ ...d, ...(brand ? BRAND[i] : {}), word: String(words[i] || d.word).toUpperCase(), font: higed ? '{px}px Higed' : d.font }))
     const hold = +(k.hold || 6)
 

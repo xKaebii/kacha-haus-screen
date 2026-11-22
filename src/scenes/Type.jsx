@@ -54,7 +54,7 @@ export default function Type ({ cfg }) {
   const host = useRef(null)
   const t = cfg.type || {}
   const words = (t.words && t.words.length ? t.words : WORDS).map(w => String(w).toUpperCase())
-  const font = t.font === 'higed' ? 'Higed' : '"Archivo Black"'
+  const font = t.font === 'archivo' ? '"Archivo Black"' : 'Higed'
 
   useEffect(() => {
     const root = host.current

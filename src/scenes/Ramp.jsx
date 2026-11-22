@@ -14,7 +14,7 @@ export default function Ramp ({ cfg }) {
   const host = useRef(null)
   const r = cfg.ramp || {}
   const words = (r.words && r.words.length ? r.words : WORDS).map(w => String(w).toUpperCase())
-  const font = r.font === 'higed' ? 'Higed' : '"Archivo Black"'
+  const font = r.font === 'archivo' ? '"Archivo Black"' : 'Higed'
 
   useEffect(() => {
     const root = host.current
