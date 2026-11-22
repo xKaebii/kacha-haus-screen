@@ -1,6 +1,28 @@
 {
-  "version": 5,
-  "mode": "led",
+  "version": 6,
+  "mode": "playlist",
+  "scenes": [
+    {
+      "type": "led",
+      "seconds": 30
+    },
+    {
+      "type": "stretch",
+      "seconds": 16.5
+    },
+    {
+      "type": "tunnel",
+      "seconds": 15.5
+    },
+    {
+      "type": "beat",
+      "seconds": 17.5
+    },
+    {
+      "type": "windows",
+      "seconds": 15
+    }
+  ],
   "bg": "#12131c",
   "fg": "#f1f1f6",
   "angle": -48,
