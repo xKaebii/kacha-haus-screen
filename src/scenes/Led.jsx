@@ -1,11 +1,10 @@
 import React, { useEffect, useRef } from 'react'
-import gsap from 'gsap'
 import { LOGO_D, parseRows } from '../lib/brand.js'
 
 /* The original LED sign: diagonal rows of outline / solid words running in opposite directions, drop logo in the middle.
    logoStyle "glass": the drop becomes liquid glass — a second copy of the running words sits inside the drop's shape and is
-   bent by a displacement map made from the drop itself (flat in the middle, refracting at the rim), with a glass rim and a
-   slow light sweep. The words scroll with CSS animations (cheapest for an endless marquee); GSAP only drives the sweep. */
+   bent by a displacement map made from the drop itself (flat in the middle, refracting at the rim), frosted (blurred and
+   milky) with a glass rim. The words scroll with CSS animations, the cheapest way to run an endless marquee. */
 export default function Led ({ cfg }) {
   const root = useRef(null)
 
@@ -15,7 +14,7 @@ export default function Led ({ cfg }) {
     const rows = parseRows(cfg.rows)
     const angle = cfg.angle ?? -48, size = cfg.size || 15, speed = cfg.speed || 12
     const glass = cfg.logoStyle === 'glass' && String(cfg.logo) !== 'false'
-    let sweep, disp_scale = 0
+    let disp_scale = 0
 
     const fillStage = (el, Wv, Hv) => {
       el.innerHTML = ''
@@ -81,15 +80,11 @@ export default function Led ({ cfg }) {
       img.setAttribute('href', c2.toDataURL()); img.setAttribute('width', S); img.setAttribute('height', Sh)
       f.setAttribute('width', S); f.setAttribute('height', Sh)
       disp.setAttribute('scale', disp_scale.toFixed(1))
-      // light sweep across the glass, slow and eased (no bounce)
-      sweep && sweep.kill()
-      const band = box.querySelector('.lg-sweep')
-      sweep = gsap.timeline({ repeat: -1, repeatDelay: 4.5 }).fromTo(band, { xPercent: -130 }, { xPercent: 130, duration: 2.4, ease: 'power2.inOut' })
     }
     build()
     let t; const onResize = () => { clearTimeout(t); t = setTimeout(build, 250) }
     addEventListener('resize', onResize)
-    return () => { removeEventListener('resize', onResize); clearTimeout(t); sweep && sweep.kill() }
+    return () => { removeEventListener('resize', onResize); clearTimeout(t) }
   }, [cfg])
 
   const showLogo = String(cfg.logo) !== 'false'
@@ -118,7 +113,6 @@ export default function Led ({ cfg }) {
             <div className="lg-clip" style={{ WebkitMaskImage: mask, maskImage: mask }}>
               <div className="lg-glass"><div className="lg-world"><div className="led-stage clone" /></div></div>
               <div className="lg-tint" />
-              <div className="lg-sweep" />
             </div>
             <svg className="lg-rim" viewBox="0 0 2010 2000">
               <defs>
