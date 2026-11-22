@@ -20,12 +20,16 @@ body{color:var(--fg);font-family:"Higed",Impact,sans-serif;transition:background
 .track span{padding-right:.32em;display:inline-block;transform:translateY(-.06em)}
 .o{color:transparent;-webkit-text-stroke:var(--stroke) var(--fg)}
 .f{color:var(--fg)}
-#mark{position:absolute;left:50%;top:50%;width:min(50vmin,50vmax);transform:translate(-50%,-50%)}
+#mark{position:absolute;left:calc(50% + var(--lx,0) * 1vw);top:calc(50% + var(--ly,0) * 1vh);width:calc(var(--ls,50) * 1vmin);transform:translate(-50%,-50%)}
 #mark svg{display:block;width:100%;height:auto;overflow:visible}
 #mark .halo{fill:var(--bg);stroke:var(--bg)}
 #mark .ink{fill:var(--fg)}
 #image{background:#000}
 #image img{width:100%;height:100%;object-fit:var(--fit,cover);display:block}
+#guides{position:fixed;inset:0;pointer-events:none;display:none;font:600 28px/1.2 system-ui,sans-serif;color:#ff3b30}
+#guides.on{display:block}
+#guides i{position:absolute;background:#ff3b30}
+#guides span{position:absolute;left:50%;top:12%;transform:translateX(-50%);background:#000;padding:6px 12px;white-space:nowrap}
 #status{position:fixed;right:12px;bottom:10px;font:11px/1 system-ui,sans-serif;color:var(--fg);opacity:0;transition:opacity .6s}
 body.debug #status{opacity:.5}
 </style>
@@ -41,6 +45,8 @@ body.debug #status{opacity:.5}
   </div>
 </div>
 <div id="image" class="layer"><img alt=""></div>
+<div id="guides"><i style="left:50%;top:0;bottom:0;width:3px;margin-left:-1px"></i><i style="top:50%;left:0;right:0;height:3px;margin-top:-1px"></i>
+  <i style="left:0;top:0;right:0;height:6px"></i><i style="left:0;bottom:0;right:0;height:6px"></i><i style="left:0;top:0;bottom:0;width:6px"></i><i style="right:0;top:0;bottom:0;width:6px"></i><span></span></div>
 <div id="status"></div>
 <script>
 /* Kacha Haus in-store screen.
@@ -100,6 +106,9 @@ body.debug #status{opacity:.5}
       root.setProperty('--bg', hex(opt('bg') || DEFAULT.bg)); root.setProperty('--fg', hex(opt('fg') || DEFAULT.fg));
       root.setProperty('--angle', (+opt('angle') || 0) + 'deg'); root.setProperty('--size', (+opt('size') || 15) + 'vmin');
       document.getElementById('mark').style.display = (String(opt('logo')) === 'false') ? 'none' : '';
+      root.setProperty('--lx', +opt('logoX') || 0); root.setProperty('--ly', +opt('logoY') || 0); root.setProperty('--ls', +opt('logoSize') || 50);
+      var g = document.getElementById('guides'); g.classList.toggle('on', String(opt('guides')) === 'true');
+      g.querySelector('span').textContent = innerWidth + ' × ' + innerHeight + ' · dpr ' + (window.devicePixelRatio || 1) + ' · screen ' + screen.width + ' × ' + screen.height;
       if (mode === 'image' && cfg.image){
         var img = document.querySelector('#image img'); root.setProperty('--fit', cfg.fit || 'cover');
         img.onload = function(){ show('image'); };
