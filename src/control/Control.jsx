@@ -235,6 +235,7 @@ export default function Control () {
         <Slider label="ขนาดตัว" v={cfg.size} min={6} max={30} step={0.5} on={v => update({ size: v })} />
         <Slider label="ความเร็ว" v={cfg.speed} min={2} max={40} step={1} on={v => update({ speed: v })} />
         <label className="c-check"><input type="checkbox" checked={String(cfg.logo) !== 'false'} onChange={e => update({ logo: e.target.checked })} /> โลโก้กลางจอ</label>
+        {String(cfg.logo) !== 'false' && <div className="c-seg">{[['solid', 'โลโก้ทึบ'], ['glass', 'Liquid glass']].map(([k, l]) => <button key={k} className={(cfg.logoStyle || 'solid') === k ? 'on' : ''} onClick={() => update({ logoStyle: k })}>{l}</button>)}</div>}
         {String(cfg.logo) !== 'false' && <>
           <Slider label="โลโก้ ซ้าย-ขวา" v={cfg.logoX} min={-30} max={30} step={0.5} on={v => update({ logoX: v })} />
           <Slider label="โลโก้ ขึ้น-ลง" v={cfg.logoY} min={-30} max={30} step={0.5} on={v => update({ logoY: v })} />

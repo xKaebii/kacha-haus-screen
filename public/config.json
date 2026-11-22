@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "mode": "playlist",
   "scenes": [
     {
@@ -146,5 +146,6 @@
     "glass": {
       "headline": "Kacha Haus"
     }
-  }
+  },
+  "logoStyle": "glass"
 }
