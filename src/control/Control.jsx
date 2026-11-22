@@ -6,6 +6,8 @@ import { DEFAULT_ROWS } from '../lib/brand.js'
 const auth = getAuth(app)
 // dev only: ?demo shows the editor without signing in and never saves
 const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
+// rendered clips in public/videos (portrait 1080x1920, loop)
+const VIDEOS = [['videos/portal.mp4', 'Portal'], ['videos/portal-sentence.mp4', 'IF I WERE YOU'], ['videos/extruded-kacha.mp4', 'KACHA โครม'], ['videos/glass-hero.mp4', 'ABSOLUTELY DESIGNED']]
 const SCENES = [
   { type: 'video', name: 'วิดีโอ (Portal)', sub: 'คลิปที่เรนเดอร์ไว้ เล่นวน เบาสุด', seconds: 16 },
   { type: 'portal', name: 'Portal Title', sub: 'ตัวอักษร 3D ทะลุประตูระเบิด (HyperFrames)', seconds: 16 },
@@ -160,7 +162,8 @@ export default function Control () {
 
       <section className="c-card">
         <h2>วิดีโอ</h2>
-        <label className="c-field">ไฟล์วิดีโอ (path ใน repo หรือลิงก์ https)<input defaultValue={cfg.video.src} onChange={e => update(p => ({ video: { ...p.video, src: e.target.value.trim() } }))} /></label>
+        <div className="c-seg">{VIDEOS.map(([src, l]) => <button key={src} className={cfg.video.src === src ? 'on' : ''} onClick={() => update(p => ({ video: { ...p.video, src } }))}>{l}</button>)}</div>
+        <label className="c-field">ไฟล์วิดีโอ (path ใน repo หรือลิงก์ https)<input value={cfg.video.src} onChange={e => { const src = e.target.value.trim(); update(p => ({ video: { ...p.video, src } })) }} /></label>
         <div className="c-seg">{[['cover', 'เต็มจอ'], ['contain', 'เห็นทั้งคลิป']].map(([k, l]) => <button key={k} className={cfg.video.fit === k ? 'on' : ''} onClick={() => update(p => ({ video: { ...p.video, fit: k } }))}>{l}</button>)}</div>
       </section>
 

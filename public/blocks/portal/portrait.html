@@ -1165,7 +1165,7 @@
           }
           if (line) lines.push(line);
           const widths = lines.map(width);
-          const scale = Math.min(1.8, 960 / Math.max(...widths), 1300 / (lines.length * 176 * 1.18)); /* portrait: wider-than-tall frame limits, allow larger type */
+          const scale = Math.min(1.8, 900 / Math.max(...widths), 1300 / (lines.length * 176 * 1.18)); /* portrait: wider-than-tall frame limits, allow larger type */
           const balance = Math.min(...widths) / Math.max(...widths);
           const score = scale * (0.94 + 0.06 * balance);
           if (!best || score > best.score) best = { lines, widths, scale, score };
@@ -1503,8 +1503,8 @@
           Math.sin(t * 0.34) * 1.6 * portal * (1 - push);
         const driftAmp = portal * (1 - 0.7 * push);
         camera.rotation.x = Math.cos(t * 0.47) * 0.04 * driftAmp;
-        camera.rotation.y = Math.sin(t * 0.62 + 1.2) * 0.06 * driftAmp;
-        camera.position.x = Math.sin(t * 0.41) * 1.4 * driftAmp;
+        camera.rotation.y = Math.sin(t * 0.62 + 1.2) * 0.015 * driftAmp; /* portrait: narrow frame, keep the sideways sway small so words stay on screen */
+        camera.position.x = Math.sin(t * 0.41) * 0.5 * driftAmp;
         camera.position.y = Math.cos(t * 0.29) * 1.0 * driftAmp;
         camera.updateProjectionMatrix();
         camera.updateMatrixWorld();
