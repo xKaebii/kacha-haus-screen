@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Kacha Haus Screen</title>
+<script>try{var b=localStorage.getItem('kh-bg');if(b)document.documentElement.style.setProperty('--bg',b)}catch(e){}</script>
 <style>
 @font-face{font-family:"Higed";src:url(fonts/higed.ttf) format("truetype");font-display:block}
 :root{--bg:#12131c;--fg:#f1f1f6;--angle:-48deg;--size:15vmin;--stroke:.022em}
@@ -59,7 +60,8 @@ body.debug #status{opacity:.5}
     'ONLY *CUP NO CAP KACHA HAUS', 'ABSOLUTELY *DESIGNED LOVE YOU CUP', '*IF I WERE YOU I WOULD DRINK',
     'MYSELF TOO *KACHA HAUS ONLY CUP', 'LOVE YOU *CUP NO CAP', 'KACHA HAUS *ABSOLUTELY DESIGNED',
     'I WOULD *DRINK MYSELF TOO', 'NO *CAP ONLY CUP IF I WERE YOU', '*KACHA *HAUS LOVE YOU CUP', 'ABSOLUTELY DESIGNED *MYSELF TOO']};
-  var cfg = null, applied = '', stage = document.getElementById('stage');
+  var BUILD = '__BUILD__';            // id of this page's code; build.json says what the newest is
+  var cfg = null, applied = '', stage = document.getElementById('stage'), leaving = false;
 
   function opt(k){ var v = q.get(k); return v === null ? cfg[k] : v; }
   function hex(v){ v = String(v); return v.charAt(0) === '#' ? v : '#' + v; }
@@ -104,6 +106,7 @@ body.debug #status{opacity:.5}
     show(null);
     setTimeout(function(){
       root.setProperty('--bg', hex(opt('bg') || DEFAULT.bg)); root.setProperty('--fg', hex(opt('fg') || DEFAULT.fg));
+      try { localStorage.setItem('kh-bg', mode === 'black' ? '#000' : hex(opt('bg') || DEFAULT.bg)); } catch(e){}
       root.setProperty('--angle', (+opt('angle') || 0) + 'deg'); root.setProperty('--size', (+opt('size') || 15) + 'vmin');
       document.getElementById('mark').style.display = (String(opt('logo')) === 'false') ? 'none' : '';
       root.setProperty('--lx', +opt('logoX') || 0); root.setProperty('--ly', +opt('logoY') || 0); root.setProperty('--ls', +opt('logoSize') || 50);
@@ -135,8 +138,23 @@ body.debug #status{opacity:.5}
   }
 
   document.fonts.load('100px Higed').then(load, load);
-  setInterval(load, 60*1000);                                   // check for changes every minute
-  setTimeout(function(){ location.reload(); }, 6*3600*1000);    // fresh start every 6 hours
+  // New page code: fade the content out to the background colour, then load the new version (no hard flash).
+  // The screen's own Refresh should stay OFF; this page updates itself.
+  function softReload(build){
+    if (leaving) return; leaving = true; show(null);
+    setTimeout(function(){
+      var u = new URLSearchParams(location.search); u.set('_v', build || Date.now());
+      location.replace(location.pathname + '?' + u.toString());
+    }, 1600);
+  }
+  function checkBuild(){
+    var x = new XMLHttpRequest();
+    x.open('GET', 'build.json?t=' + Date.now()); x.timeout = 15000;
+    x.onload = function(){ try { var b = JSON.parse(x.responseText).build; if (x.status === 200 && b && b !== BUILD && q.get('_v') !== b) softReload(b); /* _v === b: tried once already, wait for the next build */ } catch(e){} };
+    x.send();
+  }
+  setInterval(function(){ load(); checkBuild(); }, 60*1000);     // check config and page code every minute
+  setTimeout(function(){ softReload(BUILD); }, 6*3600*1000);    // fresh start every 6 hours
   var t; addEventListener('resize', function(){ clearTimeout(t); t = setTimeout(function(){ applied = ''; apply(); }, 300); });
 })();
 </script>
