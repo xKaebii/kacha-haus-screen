@@ -7,9 +7,10 @@ import Windows from './scenes/Windows.jsx'
 import Kinetic from './scenes/Kinetic.jsx'
 import Type from './scenes/Type.jsx'
 import Ramp from './scenes/Ramp.jsx'
+import Hyper from './scenes/Hyper.jsx'
 import { watchConfig } from './lib/firebase.js'
 
-const SCENES = { led: Led, ramp: Ramp, type: Type, kinetic: Kinetic, endless: Kinetic, swirl: Kinetic, twisted: Kinetic, relax: Kinetic, stretch: Stretch, tunnel: Tunnel, beat: Beat, windows: Windows }
+const SCENES = { led: Led, hyper: Hyper, ramp: Ramp, type: Type, kinetic: Kinetic, endless: Kinetic, swirl: Kinetic, twisted: Kinetic, relax: Kinetic, stretch: Stretch, tunnel: Tunnel, beat: Beat, windows: Windows }
 const q = new URLSearchParams(location.search)
 const FADE = 1200
 

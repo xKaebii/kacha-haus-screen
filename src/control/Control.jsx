@@ -7,6 +7,7 @@ const auth = getAuth(app)
 // dev only: ?demo shows the editor without signing in and never saves
 const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
 const SCENES = [
+  { type: 'hyper', name: 'Hyper (HyperFrames)', sub: 'สไตล์โชว์จอ LED: คำกระแทก เหวี่ยง หมุน + เบลอ', seconds: 16 },
   { type: 'ramp', name: 'Speed Ramp', sub: 'คำพุ่งเข้า-ช้า-พุ่งออก + เบลอตามความเร็ว', seconds: 20 },
   { type: 'type', name: 'Type (GSAP)', sub: 'คำใหญ่ทีละคำ 15 ท่า + กำแพงคำหมุน', seconds: 60 },
   { type: 'kinetic', name: 'Kinetic 3D', sub: '4 รูปทรงหมุนต่อกัน (Codrops)', seconds: 30 },
@@ -39,6 +40,7 @@ function normalise (c) {
     stretch: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'ABSOLUTELY', 'DESIGNED'], ...(c.stretch || {}) },
     beat: { lines: ['IF I', 'WERE / YOU', 'I WOULD', 'DRINK', 'MYSELF', 'TOO'], ...(c.beat || {}) },
     windows: { words: ['KACHA', 'HAUS'], ...(c.windows || {}) },
+    hyper: { slamA: ['ONLY', '*CUP', 'NO', '*CAP', 'KACHA', '*HAUS'], shutter: 'KACHA', headline: 'MILK *TEA', explode: 'ABSOLUTELY', slamB: ['LOVE', 'YOU', '*CUP'], accent: '#FFD700', ...(c.hyper || {}) },
     ramp: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED'], font: 'archivo', drift: 1.3, ...(c.ramp || {}) },
     type: { words: ['KACHA', 'HAUS', 'ONLY CUP', 'NO CAP', 'CHINESE', 'MILK TEA', 'ABSOLUTELY', 'DESIGNED', 'LOVE YOU', 'CUP'], font: 'archivo', hold: 1.1, ...(c.type || {}) },
     kinetic: { words: ['KACHA', 'HAUS', 'NO CAP', 'ONLY CUP'], palette: 'original', font: 'original', hold: 6, ...(c.kinetic || {}) }
@@ -149,6 +151,22 @@ export default function Control () {
             <div className="c-seg">{[['cover', 'เต็มจอ'], ['contain', 'เห็นทั้งรูป']].map(([k, l]) => <button key={k} className={cfg.fit === k ? 'on' : ''} onClick={() => update({ fit: k })}>{l}</button>)}</div>
           </>
         )}
+      </section>
+
+      <section className="c-card">
+        <h2>Hyper <small>(ใส่ * หน้าคำ = สีเน้น)</small></h2>
+        <label className="c-field">ชุดคำกระแทก 1 · หนึ่งบรรทัด = หนึ่งคำ
+          <textarea rows="4" defaultValue={cfg.hyper.slamA.join('\n')} onChange={e => update(p => ({ hyper: { ...p.hyper, slamA: lines(e.target.value.toUpperCase()) } }))} />
+        </label>
+        <div className="c-row2">
+          <label className="c-field">คำเหวี่ยง-หมุน<input defaultValue={cfg.hyper.shutter} onChange={e => update(p => ({ hyper: { ...p.hyper, shutter: e.target.value.toUpperCase() } }))} /></label>
+          <label className="c-field">หัวข้อกระแทก<input defaultValue={cfg.hyper.headline} onChange={e => update(p => ({ hyper: { ...p.hyper, headline: e.target.value.toUpperCase() } }))} /></label>
+          <label className="c-field">คำแตกแล้วรวม<input defaultValue={cfg.hyper.explode} onChange={e => update(p => ({ hyper: { ...p.hyper, explode: e.target.value.toUpperCase() } }))} /></label>
+          <label className="c-field">สีเน้น<input type="color" value={cfg.hyper.accent} onChange={e => update(p => ({ hyper: { ...p.hyper, accent: e.target.value } }))} /></label>
+        </div>
+        <label className="c-field">ชุดคำกระแทก 2
+          <textarea rows="3" defaultValue={cfg.hyper.slamB.join('\n')} onChange={e => update(p => ({ hyper: { ...p.hyper, slamB: lines(e.target.value.toUpperCase()) } }))} />
+        </label>
       </section>
 
       <section className="c-card">

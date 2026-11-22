@@ -8,6 +8,7 @@
 | type | ฉาก | จุดหักมุม |
 |---|---|---|
 | `led` | ป้าย LED เดิม: คำเฉียงวิ่งสวนกัน + โลโก้กลาง | – |
+| `hyper` | **Hyper** สไตล์คลิปโชว์จอ LED: คำกระแทกทีละคำ (คำ `*` เป็นสีเน้น) → คำถูกเหวี่ยง ตบ หมุน 3 แกน → หัวข้อกระแทกพร้อมสั่น 3 เฟรม → ตัวอักษรแตกแล้วรวม → โลโก้ + วงแหวน · เบลอตามความเร็ว (พอร์ตจาก HyperFrames ด้านล่าง) | ตั้งค่า `hyper.slamA`, `shutter`, `headline`, `explode`, `slamB`, `accent` |
 | `ramp` | **Speed Ramp** (GSAP ล้วน) คำพุ่งเข้าเร็วมาก ผ่อนจนเกือบหยุดให้อ่าน แล้วพุ่งออก (ความเร็วรูปตัว U) เบลอและยืดตามความเร็ว · สลับทิศ ขวา/ซ้าย/ล่าง/ซูมทะลุ · จบด้วยโลโก้ | ตั้งค่า `ramp.words`, `ramp.font`, `ramp.drift` |
 | `type` | **Type (GSAP ล้วน)** คำใหญ่ทีละคำ แต่ละคำเข้าด้วยท่าต่างกัน 15 ท่า ทุก 4 คำมีกำแพงคำหมุน −90° (พอร์ตจาก Codrops ด้านล่าง) | – |
 | `kinetic` | **Kinetic 3D** (พอร์ตจาก Codrops ด้านล่าง) 4 รูปทรงบนวงกลม หมุนต่อกัน · `endless` ปมคำ · `swirl` ลูกบอลคำ · `twisted` แท่งคำบิด · `relax` ผืนคำเป็นคลื่น (เลือกเดี่ยวได้) | – |
@@ -53,3 +54,4 @@ npm run build      # dist/ + build.json
 - ฟอนต์ต้นฉบับของฉากนี้: Orbitron, Montserrat Alternates, Archivo Black, Open Sans (SIL Open Font License ผ่าน @fontsource)
 - ตั้งค่าใน config: `kinetic.words` (4 คำ), `kinetic.palette` (`original` / `brand`), `kinetic.font` (`original` / `higed`), `kinetic.hold` (วินาทีที่ค้างแต่ละรูปทรง)
 - ฉาก `type` พอร์ตจาก Codrops **On-Scroll Typography Animations** (https://github.com/codrops/OnScrollTypographyAnimations) และ **Kinetic Type Page Transition** (https://github.com/codrops/KineticTypePageTransition) · MIT License, Copyright (c) Codrops · ต้นฉบับขยับตามการเลื่อนหน้า ที่นี่เล่นตามเวลา · ตั้งค่า `type.words`, `type.font` (`archivo` / `higed`), `type.hold`
+- ฉาก `hyper` พอร์ตจาก **HyperFrames** โดย HeyGen (https://github.com/heygen-com/hyperframes) · Apache License 2.0 (http://www.apache.org/licenses/LICENSE-2.0) · ใช้คอมโพเนนต์ caption-kinetic-slam, shutter-slam, headline-slam, char-slam-explode, logo-sting · สิ่งที่เปลี่ยน: คำ/โลโก้ของร้าน, จัดสำหรับจอแนวตั้ง, เบลอคิดจากความเร็วจริงแทนการเรนเดอร์ shutter, ตัดแฟลชขาว 1 เฟรมของ logo-sting ออก

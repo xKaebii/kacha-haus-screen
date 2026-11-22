@@ -1,7 +1,11 @@
 {
-  "version": 9,
+  "version": 10,
   "mode": "playlist",
   "scenes": [
+    {
+      "type": "hyper",
+      "seconds": 16
+    },
     {
       "type": "ramp",
       "seconds": 20
@@ -104,5 +108,24 @@
     ],
     "font": "archivo",
     "drift": 1.3
+  },
+  "hyper": {
+    "slamA": [
+      "ONLY",
+      "*CUP",
+      "NO",
+      "*CAP",
+      "KACHA",
+      "*HAUS"
+    ],
+    "shutter": "KACHA",
+    "headline": "MILK *TEA",
+    "explode": "ABSOLUTELY",
+    "slamB": [
+      "LOVE",
+      "YOU",
+      "*CUP"
+    ],
+    "accent": "#FFD700"
   }
 }

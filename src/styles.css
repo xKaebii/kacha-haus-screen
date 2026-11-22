@@ -44,3 +44,11 @@ body { color: var(--fg); font-family: "Higed", Impact, sans-serif; transition: b
 .rp-word { white-space: nowrap; line-height: 1; text-transform: uppercase; filter: url(#rp-blur); will-change: transform, filter }
 .rp-logo { width: 4.2em; height: auto; display: block }
 .rp-text { display: inline-block }
+
+/* HYPER scene (HyperFrames impact primitives) */
+.hy { background: var(--bg); color: var(--fg); overflow: hidden }
+.hy-stage { position: absolute; inset: 0; filter: url(#hy-blur) }
+.hy-el { position: absolute; white-space: nowrap; line-height: 1; text-transform: uppercase; color: var(--fg); will-change: transform, opacity }
+.hy-glyph { display: inline-block; will-change: transform }
+.hy-ring { border: 6px solid; border-radius: 50% }
+.hy-logo svg { display: block }
