@@ -7,7 +7,7 @@ const auth = getAuth(app)
 // dev only: ?demo shows the editor without signing in and never saves
 const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
 // rendered clips in public/videos (portrait 1080x1920, loop)
-const VIDEOS = [['videos/portal.mp4', 'Portal'], ['videos/portal-sentence.mp4', 'IF I WERE YOU'], ['videos/extruded-kacha.mp4', 'KACHA โครม'], ['videos/glass-hero.mp4', 'ABSOLUTELY DESIGNED']]
+const VIDEOS = [['videos/portal.mp4', 'Portal'], ['videos/portal-sentence.mp4', 'IF I WERE YOU'], ['videos/extruded-kacha.mp4', 'KACHA โครม'], ['videos/glass-hero.mp4', 'ABSOLUTELY DESIGNED'], ['videos/neon-laser.mp4', 'Neon Laser (Katana)']]
 const SCENES = [
   { type: 'video', name: 'วิดีโอ (Portal)', sub: 'คลิปที่เรนเดอร์ไว้ เล่นวน เบาสุด', seconds: 16 },
   { type: 'portal', name: 'Portal Title', sub: 'ตัวอักษร 3D ทะลุประตูระเบิด (HyperFrames)', seconds: 16 },
