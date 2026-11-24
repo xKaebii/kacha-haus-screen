@@ -1,0 +1,11 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Kacha Haus</title>
+<style>html,body{margin:0;height:100%;background:#000;overflow:hidden}video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;background:#000}</style></head>
+<body><video id="v" autoplay muted loop playsinline preload="auto"></video>
+<script>
+// Plays one clip full screen, nothing else: play.html?v=white-mink  (file name in videos/, without .mp4)
+var name = (new URLSearchParams(location.search).get('v') || 'white-mink').replace(/[^a-z0-9-]/gi, '');
+var v = document.getElementById('v'); v.src = 'videos/' + name + '.mp4';
+function go(){ var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+v.addEventListener('pause', function(){ setTimeout(go, 500); }); go();
+</script></body></html>
