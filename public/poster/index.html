@@ -31,7 +31,7 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
   var q = new URLSearchParams(location.search), rowSpeed = q.has('rows') ? +q.get('rows') : 40;
   var NAMES = q.get('p') ? [q.get('p')] : ['p1', 'p2', 'p3'];
   var stage = document.getElementById('stage');
-  var FOCUS = { p1: [540, 1263], p2: [540, 981], p3: [399, 840] };   // cup centre per poster on the 1080x1920 stage
+  var FOCUS = { p1: [540, 1317], p2: [600, 1010], p3: [408, 833] };   // cup centre per poster on the 1080x1920 stage
   gsap.config({ force3D: true });
 
   function fit () {   // clientWidth, not innerWidth: the unscaled stage can widen the layout viewport on phones/players
@@ -45,7 +45,7 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
   // Builds one poster; returns { el, rows: [tweens], word: timeline (paused) }
   function makePoster (dir, L) {
     var p = el('poster', stage); p.dataset.name = dir;
-    img('bg', dir + '/bg.jpg', p);
+    var bgEl = img('bg', dir + '/bg.jpg', p);
     var rows = el('rows', p), rowTweens = [], loop = L.rowLoop, f = L.rowFade;
     for (var i = 0; i < 17; i++) {
       var y = i * 116 - 36, a = Math.max(f[2], Math.min(f[3], f[2] + (f[3] - f[2]) * (y - f[0]) / (f[1] - f[0])));
@@ -56,7 +56,7 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
       if (rowSpeed > 0) rowTweens.push(gsap.to(r, { x: start + (i % 2 ? loop : -loop), duration: loop / rowSpeed, ease: 'none', repeat: -1, paused: true,
         modifiers: { x: gsap.utils.unitize(gsap.utils.wrap(-loop, 0)) } }));
     }
-    if (L.over) img('over', dir + '/over.webp', p);
+    var overEl = L.over ? img('over', dir + '/over.webp', p) : null;
     var word = el('word', p, { top: L.top + 'px', height: L.h + 'px' });
     var cut = img('cut', dir + '/cut.webp', p);
     if (!L.behind) p.appendChild(word);                       // KACHA HAUS in front of the subject unless the Figma frame has it behind
@@ -65,11 +65,12 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
       var d = el('ltr', word, { left: b[0] + 'px', width: b[1] + 'px', height: L.h + 'px', backgroundImage: 'url(' + dir + '/word.png)', backgroundPosition: (-b[0]) + 'px 0' });
       word.insertBefore(d, band); return d;
     });
-    img('logo', dir + '/logo.svg', p);
+    var logoEl = img('logo', dir + '/logo.svg', p);
 
     var H = L.h, from = L.left - 300, to = L.left + L.width;
     gsap.set(letters, { y: H });
-    var api = { el: p, rows: rowTweens, letters: letters, word: word, H: H, focus: FOCUS[dir] || [540, 1100] };
+    var api = { el: p, rows: rowTweens, letters: letters, word: word, H: H, focus: FOCUS[dir] || [540, 1100], cut: cut,
+      world: [bgEl, rows, overEl, logoEl].filter(Boolean) };   // everything except the subject and the word
     api.rise = function (tl, at) { tl.fromTo(letters, { y: H }, { y: 0, duration: 1.8, ease: 'expo.out', stagger: .08 }, at); };
     api.sweep = function (tl, at) {          // a band of light across the letters: band moves right, the white letters inside move left
       tl.set(band, { opacity: 1 }, at);
@@ -89,16 +90,22 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
     preload(files, function () { play(NAMES.map(function (n, i) { return makePoster(n, Ls[i]); })); });
   });
 
-  // ---- playback: hold each poster ~9 s, then hand over with its own transition
-  //   p1 -> p2  ZOOM     fly into the pink poster's cup, come out of the grape cup
-  //   p2 -> p3  BLINDS   six red / black bars sweep up over the screen and on, uncovering the next poster
-  //   p3 -> p1  HANDOFF  the next poster slides up over the old one; KACHA HAUS stays put and is wiped from red to sage
-  var HOLD = 9.2, z = 1;
+  // ---- playback: hold each poster ~9 s, then hand over. No wipes or covers: the posters' own elements do the work.
+  //   Shared in every hand-over: KACHA HAUS rolls letter by letter (old letters lift and fade, new ones rise in, the colour
+  //   changes per letter), the background word rows rush out and the new rows settle in, the backgrounds dissolve.
+  //   p1 -> p2  EXCHANGE   she sinks out of frame as the hand with the grape cup rises in: one subject hands over to the next
+  //   p2 -> p3  MATCH CUT  the grape cup travels and shrinks onto the cup in her raised hand; the silver-jacket scene forms around it
+  //   p3 -> p1  DEPTH      she drifts towards the camera and dissolves, the next subject settles in from behind
+  var HOLD = 9.2, z = 10;
   function front (P) { P.el.style.zIndex = ++z; }
-  function enter (P) { P.el.style.visibility = 'visible'; gsap.set(P.el, { clearProps: 'transform,opacity' }); gsap.set(P.word, { clearProps: 'transform' }); P.rows.forEach(function (t) { t.play(); }); }
-  function leave (P) { P.el.style.visibility = 'hidden'; P.rows.forEach(function (t) { t.pause(); }); gsap.set(P.letters, { y: P.H }); }
+  function under (A, B) { B.el.style.zIndex = (+A.el.style.zIndex || z) - 1; }
+  function enter (P) { P.el.style.visibility = 'visible'; gsap.set(P.el, { clearProps: 'transform,opacity' }); P.rows.forEach(function (t) { t.timeScale(1).play(); }); }
+  function leave (P) {
+    P.el.style.visibility = 'hidden'; P.rows.forEach(function (t) { t.pause().timeScale(1); });
+    gsap.set([P.cut].concat(P.world, P.letters), { clearProps: 'transform,opacity' }); gsap.set(P.letters, { y: P.H });
+  }
 
-  function hold (P, risen, done) {          // letters rise (unless they arrived already in place), light sweeps twice
+  function hold (P, risen, done) {          // letters rise (unless they rolled in already), light sweeps twice
     var tl = gsap.timeline({ onComplete: done });
     if (!risen) P.rise(tl, .2);
     P.sweep(tl, risen ? .6 : 1.9); P.sweep(tl, risen ? 4.4 : 5.6);
@@ -106,49 +113,50 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
     return tl;
   }
 
-  function zoom (A, B, done) {
-    var tl = gsap.timeline({ onComplete: done });
-    gsap.set(A.el, { transformOrigin: A.focus[0] + 'px ' + A.focus[1] + 'px' });
-    gsap.set(B.el, { transformOrigin: B.focus[0] + 'px ' + B.focus[1] + 'px' });
-    A.lift(tl, 0);
-    tl.to(A.el, { scale: 4, duration: 1.5, ease: 'power3.in' }, .2);
-    tl.to(A.el, { opacity: 0, duration: .55, ease: 'power1.in' }, 1.15);
-    tl.add(function () { enter(B); front(B); }, 1.3);
-    // fromTo everywhere: start values live in the timeline, so nothing depends on when a gsap.set() gets rendered
-    tl.fromTo(B.el, { scale: 2.2 }, { scale: 1, duration: 2, ease: 'expo.out', immediateRender: false }, 1.3);
-    tl.fromTo(B.el, { opacity: 0 }, { opacity: 1, duration: .7, ease: 'power2.out', immediateRender: false }, 1.3);
-    tl.add(function () { leave(A); gsap.set(A.el, { clearProps: 'transform,opacity' }); }, 1.75);
-    B.rise(tl, 1.9);
-    return tl;
+  // shared choreography; mode 'over' = B sits above A and its world fades in, 'under' = B sits below and A's world fades out
+  function swap (tl, A, B, mode, at, dur) {
+    if (mode === 'over') tl.fromTo(B.world, { opacity: 0 }, { opacity: 1, duration: dur, ease: 'sine.inOut' }, at);
+    else tl.fromTo(A.world, { opacity: 1 }, { opacity: 0, duration: dur, ease: 'sine.inOut' }, at);
+    A.rows.forEach(function (t) { tl.to(t, { timeScale: 6, duration: dur * .9, ease: 'power2.in' }, at); });
+    B.rows.forEach(function (t) { tl.fromTo(t, { timeScale: 6 }, { timeScale: 1, duration: dur * 1.6, ease: 'expo.out' }, at + dur * .35); });
+    tl.to(A.letters, { y: -A.H * .45, opacity: 0, duration: .8, ease: 'power3.in', stagger: .045 }, at);
+    tl.fromTo(B.letters, { y: B.H * .55, opacity: 0 }, { y: 0, opacity: 1, duration: 1.6, ease: 'expo.out', stagger: .055 }, at + .5);
   }
+  function org (P) { return (P.focus[0] + 180) + 'px ' + (P.focus[1] - 120) + 'px'; }   // cup centre in the cut-out's own box
+  function finish (A, done) { return function () { leave(A); done(); }; }
 
-  var bars = [];
-  for (var b = 0; b < 6; b++) bars.push(el('bar', stage, { position: 'absolute', top: 0, left: (b * 180) + 'px', width: '181px', height: '1920px',
-    background: b % 2 ? '#0d0d10' : '#c8101a', zIndex: 999, visibility: 'hidden', willChange: 'transform' }));
-  function blinds (A, B, done) {
-    var tl = gsap.timeline({ onComplete: done });
-    gsap.set(bars, { visibility: 'visible' });
-    A.lift(tl, 0);
-    tl.fromTo(bars, { y: 1920 }, { y: 0, duration: .75, ease: 'power3.inOut', stagger: .07 }, .35);
-    tl.add(function () { leave(A); enter(B); front(B); }, 1.5);
-    tl.to(bars, { y: -1920, duration: .85, ease: 'power3.inOut', stagger: .07 }, 1.55);
-    tl.set(bars, { visibility: 'hidden' });
-    B.rise(tl, 2.0);
-    return tl;
-  }
-
-  function handoff (A, B, done) {
-    var tl = gsap.timeline({ onComplete: function () { leave(A); gsap.set([A.el, A.word], { clearProps: 'transform' }); done(); } });
+  function exchange (A, B, done) {
+    var tl = gsap.timeline({ onComplete: finish(A, done) });
     enter(B); front(B);
-    tl.fromTo(B.letters, { y: 0 }, { y: 0, duration: .01 }, 0);         // B's word is already in place, only revealed by the slide
-    tl.fromTo(B.el, { y: 1920 }, { y: 0, duration: 1.7, ease: 'expo.inOut' }, 0);
-    tl.fromTo(B.word, { y: -1920 }, { y: 0, duration: 1.7, ease: 'expo.inOut' }, 0);   // counter-move: the word stays fixed on screen
-    tl.fromTo(A.el, { y: 0 }, { y: -640, duration: 1.7, ease: 'expo.inOut' }, 0);      // old poster drifts up slower: parallax
-    tl.fromTo(A.word, { y: 0 }, { y: 640, duration: 1.7, ease: 'expo.inOut' }, 0);
+    tl.fromTo(B.cut, { y: 1800 }, { y: 0, duration: 2, ease: 'expo.out' }, .7);                          // the cup rises in
+    tl.to(A.cut, { y: 1150, scale: .94, transformOrigin: '50% 100%', duration: 1.25, ease: 'power3.in' }, .05);   // she sinks out
+    swap(tl, A, B, 'over', .15, 1.4);
     return tl;
   }
 
-  var TRANS = [zoom, blinds, handoff];
+  function matchCut (A, B, done) {
+    var tl = gsap.timeline({ onComplete: finish(A, done) });
+    enter(B); under(A, B);
+    var dx = B.focus[0] - A.focus[0], dy = B.focus[1] - A.focus[1];
+    tl.fromTo(B.cut, { opacity: 0, scale: 1.14, transformOrigin: org(B) },
+      { opacity: 1, scale: 1, duration: 2, ease: 'expo.out' }, .85);                                      // her scene forms around the cup
+    tl.to(A.cut, { x: dx, y: dy, scale: .3, rotation: -9, transformOrigin: org(A), duration: 1.5, ease: 'expo.inOut' }, 0);
+    tl.to(A.cut, { opacity: 0, duration: .55, ease: 'power1.in' }, 1.05);
+    swap(tl, A, B, 'under', .1, 1.3);
+    return tl;
+  }
+
+  function depth (A, B, done) {
+    var tl = gsap.timeline({ onComplete: finish(A, done) });
+    enter(B); front(B);
+    tl.to(A.cut, { scale: 1.14, opacity: 0, transformOrigin: '50% 45%', duration: 1.3, ease: 'power2.in' }, 0);   // towards the camera
+    tl.fromTo(B.cut, { opacity: 0, scale: .9, transformOrigin: org(B) },
+      { opacity: 1, scale: 1, duration: 2, ease: 'expo.out' }, .55);                                      // settles in from behind
+    swap(tl, A, B, 'over', .2, 1.3);
+    return tl;
+  }
+
+  var TRANS = [exchange, matchCut, depth];
   function play (P) {
     window.__posters = P;
     if (P.length === 1) {                    // single poster: rise, sweep, lift, again
