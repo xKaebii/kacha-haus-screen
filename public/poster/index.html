@@ -29,7 +29,9 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
 <script>
 (function () {
   var q = new URLSearchParams(location.search), rowSpeed = q.has('rows') ? +q.get('rows') : 40;
-  var NAMES = q.get('p') ? [q.get('p')] : ['p1', 'p2', 'p3'];
+  // Only the pink poster plays by default (all three with transitions lagged on the shop player, 2026-11-24).
+  // ?p=p2 shows another one alone · ?p=all plays the three with the transitions (kept for later)
+  var NAMES = q.get('p') === 'all' ? ['p1', 'p2', 'p3'] : [q.get('p') || 'p1'];
   var stage = document.getElementById('stage');
   var FOCUS = { p1: [540, 1317], p2: [600, 1010], p3: [408, 833] };   // cup centre per poster on the 1080x1920 stage
   gsap.config({ force3D: true });
