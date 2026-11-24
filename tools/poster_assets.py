@@ -14,8 +14,8 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageChops
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / 'public/poster'; FONT = str(ROOT / 'src/assets/higed.ttf')
 W, H = 1080, 1920
-# The Figma frame is 960x1200; on the 9:16 screen it is drawn 1.3x (1248x1560) at (-84, 360): she fills the width, ~20% is left above her.
-FX, FY, FS = -84, 360, 1.3
+# The Figma frame is 960x1200; on the 9:16 screen it is drawn 1.5x (1440x1800) at (-180, 120) so the model fills the height.
+FX, FY, FS = -180, 120, 1.5
 def fx(x): return FX + x * FS
 def fy(y): return FY + y * FS
 CAP_TOP = round(fy(90))                                           # KACHA HAUS caps start where the Figma caps do
