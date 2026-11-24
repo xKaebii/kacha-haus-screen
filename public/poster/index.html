@@ -45,7 +45,7 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
     // 2/10 rows: one shared image strip per row, two loops wide; fade towards the top is a fixed opacity per row
     var host = document.getElementById('rows'), loop = L.rowLoop;
     for (var i = 0; i < 17; i++) {
-      var y = i * 116 - 36, a = 1;                                        // every row full strength, top included
+      var y = i * 116 - 36, a = Math.max(0, Math.min(1, .35 + .5 * y / 1920));   // soft at the top, stronger towards the bottom
             var row = document.createElement('div'); row.className = 'row';
       row.style.top = y + 'px'; row.style.width = Math.ceil(loop * 2) + 'px'; row.style.opacity = a.toFixed(3);
       host.appendChild(row);
