@@ -14,7 +14,7 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
 #stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; opacity: 0;
   background: #000 url(bg.jpg) 0 0 / 1080px 1920px no-repeat; }
 .row { position: absolute; left: 0; height: 160px; background: url(row.png) 0 0 / auto 160px repeat-x; will-change: transform; backface-visibility: hidden; }
-.girl { position: absolute; left: -180px; top: 120px; width: 1440px; height: 1800px; }   /* Figma frame drawn 1.5x so she fills the height */
+.girl { position: absolute; left: -84px; top: 360px; width: 1248px; height: 1560px; }   /* Figma frame drawn 1.3x, ~20% left above her */
 #word { position: absolute; left: 0; width: 1080px; overflow: hidden; }
 .ltr { position: absolute; top: 0; background: url(word.png) no-repeat; will-change: transform; backface-visibility: hidden; }
 #band { position: absolute; top: 0; left: 0; width: 300px; overflow: hidden; will-change: transform; opacity: 0;
@@ -45,9 +45,8 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
     // 2/10 rows: one shared image strip per row, two loops wide; fade towards the top is a fixed opacity per row
     var host = document.getElementById('rows'), loop = L.rowLoop;
     for (var i = 0; i < 17; i++) {
-      var y = i * 116 - 36, a = Math.max(0, Math.min(1, (y / 1920 - .12) / .5));
-      if (a <= 0.01) continue;
-      var row = document.createElement('div'); row.className = 'row';
+      var y = i * 116 - 36, a = 1;                                        // every row full strength, top included
+            var row = document.createElement('div'); row.className = 'row';
       row.style.top = y + 'px'; row.style.width = Math.ceil(loop * 2) + 'px'; row.style.opacity = a.toFixed(3);
       host.appendChild(row);
       var start = -((i * 137) % loop);

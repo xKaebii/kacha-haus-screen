@@ -14,8 +14,8 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageChops
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / 'public/poster'; FONT = str(ROOT / 'src/assets/higed.ttf')
 W, H = 1080, 1920
-# The Figma frame is 960x1200; on the 9:16 screen it is drawn 1.5x (1440x1800) at (-180, 120) so the model fills the height.
-FX, FY, FS = -180, 120, 1.5
+# The Figma frame is 960x1200; on the 9:16 screen it is drawn 1.3x (1248x1560) at (-84, 360): she fills the width, ~20% is left above her.
+FX, FY, FS = -84, 360, 1.3
 def fx(x): return FX + x * FS
 def fy(y): return FY + y * FS
 CAP_TOP = round(fy(90))                                           # KACHA HAUS caps start where the Figma caps do
@@ -29,8 +29,7 @@ bg = Image.new('RGB', (W, H))
 px = bg.load(); d = ImageDraw.Draw(bg)
 for y in range(H):
     t = y / H
-    t0, t1 = FY / H, fy(.34615 * 1200) / H                          # Figma: black at the frame top -> sage at 34.6%
-    c = (0, 0, 0) if t <= t0 else sage if t >= t1 else lerp((0, 0, 0), sage, (t - t0) / (t1 - t0))
+    c = sage                                                        # sage all the way to the top (Figma had black at the top)
     d.line([(0, y), (W, y)], fill=c)
 glow = Image.new('L', (W, H), 0); ImageDraw.Draw(glow).ellipse([fx(0), fy(282), fx(878), fy(282 + 964)], fill=255)
 glow = glow.filter(ImageFilter.GaussianBlur(100 * FS))
