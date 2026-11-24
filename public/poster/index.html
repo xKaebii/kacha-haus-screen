@@ -2,38 +2,36 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kacha Haus · Poster</title>
-<!-- Shop-screen poster (portrait 9:16, 1080x1920), composition from Figma "Frame 5", animated with GSAP.
-     Built for a weak player: every layer is a finished image (made by tools/poster_assets.py) and only transform/opacity
-     animate, so the GPU just moves pictures; no filters, masks, blend modes or SVG are redrawn per frame.
-     Back to front: bg.jpg (gradient, glow, camo) · 2/10 rows (alternate rows run left / right) · model · KACHA HAUS (letters
-     rise in one by one, a light band sweeps across, they lift out, loop) · logo.
-     URL options: ?rows=40 (px/s of the 2/10 rows, 0 = still) -->
+<title>Kacha Haus · Posters</title>
+<!-- Shop-screen posters (portrait 9:16, 1080x1920), compositions from the Kacha Haus Figma file, animated with GSAP.
+     p1 pink fur (Frame 5) · p2 grape cup (Frame 3) · p3 silver jacket (Frame 4). Assets in p1/ p2/ p3/ from tools/poster_assets.py.
+     Built for a weak player: every layer is a finished image and only transform/opacity animate.
+     Each poster: bg.jpg · background word rows (alternate rows run left / right) · over.png (glow / ghost) · cut-out ·
+     KACHA HAUS (letters rise in one by one, a light band sweeps across, they lift out) · logo.
+     URL options: ?p=p2 (show one poster only) · ?rows=40 (px/s of the rows, 0 = still) -->
 <style>
 html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
-#stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; opacity: 0;
-  background: #000 url(bg.jpg) 0 0 / 1080px 1920px no-repeat; }
-.row { position: absolute; left: 0; height: 160px; background: url(row.png) 0 0 / auto 160px repeat-x; will-change: transform; backface-visibility: hidden; }
-.girl { position: absolute; left: -180px; top: 120px; width: 1440px; height: 1800px; }   /* Figma frame drawn 1.5x so she fills the height */
-#word { position: absolute; left: 0; width: 1080px; overflow: hidden; }
-.ltr { position: absolute; top: 0; background: url(word.png) no-repeat; will-change: transform; backface-visibility: hidden; }
-#band { position: absolute; top: 0; left: 0; width: 300px; overflow: hidden; will-change: transform; opacity: 0;
+#stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; background: #000; }
+.poster { position: absolute; inset: 0; overflow: hidden; visibility: hidden; }
+.poster .bg, .poster .over { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+.row { position: absolute; left: 0; height: 160px; background-repeat: repeat-x; background-size: auto 160px; will-change: transform; backface-visibility: hidden; }
+.cut { position: absolute; left: -180px; top: 120px; width: 1440px; height: 1800px; }   /* Figma frame drawn 1.5x */
+.word { position: absolute; left: 0; width: 1080px; overflow: hidden; }
+.ltr { position: absolute; top: 0; background-repeat: no-repeat; will-change: transform; backface-visibility: hidden; }
+.band { position: absolute; top: 0; left: 0; width: 300px; overflow: hidden; will-change: transform; opacity: 0;
   -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%, #000 55%, transparent); mask-image: linear-gradient(90deg, transparent, #000 45%, #000 55%, transparent); }
-#lit { position: absolute; top: 0; left: 0; width: 1080px; background: url(word-lit.png) no-repeat; will-change: transform; }
+.lit { position: absolute; top: 0; left: 0; width: 1080px; background-repeat: no-repeat; will-change: transform; }
 .logo { position: absolute; left: 29px; top: 1845px; width: 57px; height: 56px; }
 </style></head>
 <body>
-<div id="stage">
-  <div id="rows"></div>
-  <img class="girl" src="girl.webp" alt="">
-  <div id="word" aria-label="KACHA HAUS"><div id="band"><div id="lit"></div></div></div>
-  <img class="logo" src="k-symbol.svg" alt="">
-</div>
+<div id="stage"></div>
 <script src="gsap.min.js"></script>
 <script>
 (function () {
   var q = new URLSearchParams(location.search), rowSpeed = q.has('rows') ? +q.get('rows') : 40;
+  var NAMES = q.get('p') ? [q.get('p')] : ['p1', 'p2', 'p3'];
   var stage = document.getElementById('stage');
+  var FOCUS = { p1: [540, 1263], p2: [540, 981], p3: [399, 840] };   // cup centre per poster on the 1080x1920 stage
   gsap.config({ force3D: true });
 
   function fit () {   // clientWidth, not innerWidth: the unscaled stage can widen the layout viewport on phones/players
@@ -41,52 +39,130 @@ html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: h
     stage.style.transform = 'translate(' + (W - 1080 * s) / 2 + 'px,' + (H - 1920 * s) / 2 + 'px) scale(' + s + ')'; }
   addEventListener('resize', fit); fit();
 
-  function build (L) {
-    // 2/10 rows: one shared image strip per row, two loops wide; fade towards the top is a fixed opacity per row
-    var host = document.getElementById('rows'), loop = L.rowLoop;
-    for (var i = 0; i < 17; i++) {
-      var y = i * 116 - 36, a = Math.max(0, Math.min(1, .35 + .5 * y / 1920));   // soft at the top, stronger towards the bottom
-            var row = document.createElement('div'); row.className = 'row';
-      row.style.top = y + 'px'; row.style.width = Math.ceil(loop * 2) + 'px'; row.style.opacity = a.toFixed(3);
-      host.appendChild(row);
-      var start = -((i * 137) % loop);
-      gsap.set(row, { x: start });
-      if (rowSpeed > 0) gsap.to(row, { x: start + (i % 2 ? loop : -loop), duration: loop / rowSpeed, ease: 'none', repeat: -1,
-        modifiers: { x: gsap.utils.unitize(gsap.utils.wrap(-loop, 0)) } });
-    }
+  function el (cls, parent, css) { var d = document.createElement('div'); d.className = cls; if (css) Object.assign(d.style, css); parent.appendChild(d); return d; }
+  function img (cls, src, parent) { var i = new Image(); i.className = cls; i.src = src; i.alt = ''; parent.appendChild(i); return i; }
 
-    // KACHA HAUS: each letter is a window onto word.png; the clip is the static #word box
-    var word = document.getElementById('word'), band = document.getElementById('band'), lit = document.getElementById('lit');
-    word.style.top = L.top + 'px'; word.style.height = L.h + 'px'; band.style.height = lit.style.height = L.h + 'px';
+  // Builds one poster; returns { el, rows: [tweens], word: timeline (paused) }
+  function makePoster (dir, L) {
+    var p = el('poster', stage); p.dataset.name = dir;
+    img('bg', dir + '/bg.jpg', p);
+    var rows = el('rows', p), rowTweens = [], loop = L.rowLoop, f = L.rowFade;
+    for (var i = 0; i < 17; i++) {
+      var y = i * 116 - 36, a = Math.max(f[2], Math.min(f[3], f[2] + (f[3] - f[2]) * (y - f[0]) / (f[1] - f[0])));
+      if (a <= 0.01) continue;
+      var r = el('row', rows, { top: y + 'px', width: Math.ceil(loop * 2) + 'px', opacity: a.toFixed(3), backgroundImage: 'url(' + dir + '/row.png)' });
+      var start = -((i * 137) % loop);
+      gsap.set(r, { x: start });
+      if (rowSpeed > 0) rowTweens.push(gsap.to(r, { x: start + (i % 2 ? loop : -loop), duration: loop / rowSpeed, ease: 'none', repeat: -1, paused: true,
+        modifiers: { x: gsap.utils.unitize(gsap.utils.wrap(-loop, 0)) } }));
+    }
+    if (L.over) img('over', dir + '/over.webp', p);
+    var word = el('word', p, { top: L.top + 'px', height: L.h + 'px' });
+    var cut = img('cut', dir + '/cut.webp', p);
+    if (!L.behind) p.appendChild(word);                       // KACHA HAUS in front of the subject unless the Figma frame has it behind
+    var band = el('band', word, { height: L.h + 'px' }), lit = el('lit', band, { height: L.h + 'px', backgroundImage: 'url(' + dir + '/word-lit.png)' });
     var letters = L.letters.map(function (b) {
-      var d = document.createElement('div'); d.className = 'ltr';
-      d.style.left = b[0] + 'px'; d.style.width = b[1] + 'px'; d.style.height = L.h + 'px';
-      d.style.backgroundPosition = (-b[0]) + 'px 0'; word.insertBefore(d, band); return d;
+      var d = el('ltr', word, { left: b[0] + 'px', width: b[1] + 'px', height: L.h + 'px', backgroundImage: 'url(' + dir + '/word.png)', backgroundPosition: (-b[0]) + 'px 0' });
+      word.insertBefore(d, band); return d;
     });
+    img('logo', dir + '/logo.svg', p);
+
     var H = L.h, from = L.left - 300, to = L.left + L.width;
     gsap.set(letters, { y: H });
-    var tl = gsap.timeline({ repeat: -1, repeatDelay: .5 });
-    // rise in one by one, long ease-out, no overshoot
-    tl.to(letters, { y: 0, duration: 1.8, ease: 'expo.out', stagger: .08 }, .3);
-    // light band sweeps across twice: the band moves right while the white letters inside it move left by the same amount
-    [1.9, 5.6].forEach(function (t) {
-      tl.set(band, { opacity: 1 }, t);
-      tl.fromTo(band, { x: from }, { x: to, duration: 2.8, ease: 'power2.inOut' }, t);
-      tl.fromTo(lit, { x: -from }, { x: -to, duration: 2.8, ease: 'power2.inOut' }, t);
-      tl.set(band, { opacity: 0 }, t + 2.8);
-    });
-    // lift out the top one by one, then start again from below
-    tl.to(letters, { y: -H, duration: 1.3, ease: 'power3.inOut', stagger: .05 }, 9.4);
-    tl.set(letters, { y: H });
-
-    gsap.to(stage, { opacity: 1, duration: 1.6, ease: 'expo.out' });
+    var api = { el: p, rows: rowTweens, letters: letters, word: word, H: H, focus: FOCUS[dir] || [540, 1100] };
+    api.rise = function (tl, at) { tl.fromTo(letters, { y: H }, { y: 0, duration: 1.8, ease: 'expo.out', stagger: .08 }, at); };
+    api.sweep = function (tl, at) {          // a band of light across the letters: band moves right, the white letters inside move left
+      tl.set(band, { opacity: 1 }, at);
+      tl.fromTo(band, { x: from }, { x: to, duration: 2.8, ease: 'power2.inOut' }, at);
+      tl.fromTo(lit, { x: -from }, { x: -to, duration: 2.8, ease: 'power2.inOut' }, at);
+      tl.set(band, { opacity: 0 }, at + 2.8);
+    };
+    api.lift = function (tl, at) { tl.to(letters, { y: -H, duration: 1.3, ease: 'power3.inOut', stagger: .05 }, at); };
+    return api;
   }
 
-  // wait for the images so nothing pops in half-decoded
-  var srcs = ['bg.jpg', 'row.png', 'word.png', 'word-lit.png', 'girl.webp'], left = srcs.length + 1, layout;
-  function done () { if (--left === 0) build(layout); }
-  srcs.forEach(function (s) { var im = new Image(); im.onload = im.onerror = done; im.src = s; });
-  fetch('layout.json').then(function (r) { return r.json(); }).then(function (j) { layout = j; done(); });
+  function preload (srcs, done) { var n = srcs.length; srcs.forEach(function (s) { var i = new Image(); i.onload = i.onerror = function () { if (--n === 0) done(); }; i.src = s; }); }
+
+  Promise.all(NAMES.map(function (n) { return fetch(n + '/layout.json').then(function (r) { return r.json(); }); })).then(function (Ls) {
+    var files = [];
+    NAMES.forEach(function (n, i) { files.push(n + '/bg.jpg', n + '/row.png', n + '/cut.webp', n + '/word.png', n + '/word-lit.png'); if (Ls[i].over) files.push(n + '/over.webp'); });
+    preload(files, function () { play(NAMES.map(function (n, i) { return makePoster(n, Ls[i]); })); });
+  });
+
+  // ---- playback: hold each poster ~9 s, then hand over with its own transition
+  //   p1 -> p2  ZOOM     fly into the pink poster's cup, come out of the grape cup
+  //   p2 -> p3  BLINDS   six red / black bars sweep up over the screen and on, uncovering the next poster
+  //   p3 -> p1  HANDOFF  the next poster slides up over the old one; KACHA HAUS stays put and is wiped from red to sage
+  var HOLD = 9.2, z = 1;
+  function front (P) { P.el.style.zIndex = ++z; }
+  function enter (P) { P.el.style.visibility = 'visible'; gsap.set(P.el, { clearProps: 'transform,opacity' }); gsap.set(P.word, { clearProps: 'transform' }); P.rows.forEach(function (t) { t.play(); }); }
+  function leave (P) { P.el.style.visibility = 'hidden'; P.rows.forEach(function (t) { t.pause(); }); gsap.set(P.letters, { y: P.H }); }
+
+  function hold (P, risen, done) {          // letters rise (unless they arrived already in place), light sweeps twice
+    var tl = gsap.timeline({ onComplete: done });
+    if (!risen) P.rise(tl, .2);
+    P.sweep(tl, risen ? .6 : 1.9); P.sweep(tl, risen ? 4.4 : 5.6);
+    tl.to({}, { duration: 0 }, HOLD);
+    return tl;
+  }
+
+  function zoom (A, B, done) {
+    var tl = gsap.timeline({ onComplete: done });
+    gsap.set(A.el, { transformOrigin: A.focus[0] + 'px ' + A.focus[1] + 'px' });
+    gsap.set(B.el, { transformOrigin: B.focus[0] + 'px ' + B.focus[1] + 'px' });
+    A.lift(tl, 0);
+    tl.to(A.el, { scale: 4, duration: 1.5, ease: 'power3.in' }, .2);
+    tl.to(A.el, { opacity: 0, duration: .55, ease: 'power1.in' }, 1.15);
+    tl.add(function () { enter(B); front(B); }, 1.3);
+    // fromTo everywhere: start values live in the timeline, so nothing depends on when a gsap.set() gets rendered
+    tl.fromTo(B.el, { scale: 2.2 }, { scale: 1, duration: 2, ease: 'expo.out', immediateRender: false }, 1.3);
+    tl.fromTo(B.el, { opacity: 0 }, { opacity: 1, duration: .7, ease: 'power2.out', immediateRender: false }, 1.3);
+    tl.add(function () { leave(A); gsap.set(A.el, { clearProps: 'transform,opacity' }); }, 1.75);
+    B.rise(tl, 1.9);
+    return tl;
+  }
+
+  var bars = [];
+  for (var b = 0; b < 6; b++) bars.push(el('bar', stage, { position: 'absolute', top: 0, left: (b * 180) + 'px', width: '181px', height: '1920px',
+    background: b % 2 ? '#0d0d10' : '#c8101a', zIndex: 999, visibility: 'hidden', willChange: 'transform' }));
+  function blinds (A, B, done) {
+    var tl = gsap.timeline({ onComplete: done });
+    gsap.set(bars, { visibility: 'visible' });
+    A.lift(tl, 0);
+    tl.fromTo(bars, { y: 1920 }, { y: 0, duration: .75, ease: 'power3.inOut', stagger: .07 }, .35);
+    tl.add(function () { leave(A); enter(B); front(B); }, 1.5);
+    tl.to(bars, { y: -1920, duration: .85, ease: 'power3.inOut', stagger: .07 }, 1.55);
+    tl.set(bars, { visibility: 'hidden' });
+    B.rise(tl, 2.0);
+    return tl;
+  }
+
+  function handoff (A, B, done) {
+    var tl = gsap.timeline({ onComplete: function () { leave(A); gsap.set([A.el, A.word], { clearProps: 'transform' }); done(); } });
+    enter(B); front(B);
+    tl.fromTo(B.letters, { y: 0 }, { y: 0, duration: .01 }, 0);         // B's word is already in place, only revealed by the slide
+    tl.fromTo(B.el, { y: 1920 }, { y: 0, duration: 1.7, ease: 'expo.inOut' }, 0);
+    tl.fromTo(B.word, { y: -1920 }, { y: 0, duration: 1.7, ease: 'expo.inOut' }, 0);   // counter-move: the word stays fixed on screen
+    tl.fromTo(A.el, { y: 0 }, { y: -640, duration: 1.7, ease: 'expo.inOut' }, 0);      // old poster drifts up slower: parallax
+    tl.fromTo(A.word, { y: 0 }, { y: 640, duration: 1.7, ease: 'expo.inOut' }, 0);
+    return tl;
+  }
+
+  var TRANS = [zoom, blinds, handoff];
+  function play (P) {
+    window.__posters = P;
+    if (P.length === 1) {                    // single poster: rise, sweep, lift, again
+      enter(P[0]); gsap.set(P[0].el, { opacity: 0 }); gsap.to(P[0].el, { opacity: 1, duration: 1.2, ease: 'expo.out' });
+      (function loop () { var tl = hold(P[0], false, function () { var t2 = gsap.timeline({ onComplete: loop }); P[0].lift(t2, 0); }); })();
+      return;
+    }
+    function cycle (k, risen) {
+      var A = P[k], B = P[(k + 1) % P.length];
+      hold(A, risen, function () { TRANS[k % TRANS.length](A, B, function () { cycle((k + 1) % P.length, true); }); });
+    }
+    enter(P[0]); front(P[0]); gsap.set(P[0].el, { opacity: 0 }); gsap.to(P[0].el, { opacity: 1, duration: 1.4, ease: 'expo.out' });
+    cycle(0, false);
+  }
 })();
 </script>
 </body></html>
