@@ -8,6 +8,7 @@ const auth = getAuth(app)
 const DEMO = import.meta.env.DEV && new URLSearchParams(location.search).has('demo')
 // rendered clips in public/videos (portrait 1080x1920, loop)
 const VIDEOS = [['videos/portal.mp4', 'Portal'], ['videos/portal-sentence.mp4', 'IF I WERE YOU'], ['videos/extruded-kacha.mp4', 'KACHA โครม'], ['videos/glass-hero.mp4', 'ABSOLUTELY DESIGNED'], ['videos/neon-laser.mp4', 'Neon Laser (Katana)'], ['videos/white-mink.mp4', 'เสื้อขนสีขาว'], ['videos/remix-mink.mp4', 'เสื้อขนสีน้ำตาล'], ['videos/field-dance.mp4', 'เต้นทุ่งหญ้า']]
+const IMAGES = [['images/poster-pink.jpg', 'โปสเตอร์ขนชมพู']]
 const SCENES = [
   { type: 'video', name: 'วิดีโอ (Portal)', sub: 'คลิปที่เรนเดอร์ไว้ เล่นวน เบาสุด', seconds: 16 },
   { type: 'portal', name: 'Portal Title', sub: 'ตัวอักษร 3D ทะลุประตูระเบิด (HyperFrames)', seconds: 16 },
@@ -154,6 +155,7 @@ export default function Control () {
         )}
         {cfg.mode === 'image' && (
           <>
+            <div className="c-seg">{IMAGES.map(([src, l]) => <button key={src} className={cfg.image === src ? 'on' : ''} onClick={() => update({ image: src })}>{l}</button>)}</div>
             <label className="c-field">ลิงก์รูป<input value={cfg.image} placeholder="https://…" onChange={e => update({ image: e.target.value.trim() })} /></label>
             <div className="c-seg">{[['cover', 'เต็มจอ'], ['contain', 'เห็นทั้งรูป']].map(([k, l]) => <button key={k} className={cfg.fit === k ? 'on' : ''} onClick={() => update({ fit: k })}>{l}</button>)}</div>
           </>
