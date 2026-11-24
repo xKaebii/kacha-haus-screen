@@ -3,140 +3,91 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Kacha Haus · Poster</title>
-<!-- Shop-screen poster (portrait 9:16, 1080x1920), composition taken from Figma "Frame 5" and rebuilt with GSAP.
-     Back to front: gradient, dark glow, "2/10" rows (alternate rows run left / right), camo texture, model cut-out,
-     KACHA HAUS in Higed in front of her (letters rise in one by one, a light sweeps across, then they lift out and the loop restarts), logo.
+<!-- Shop-screen poster (portrait 9:16, 1080x1920), composition from Figma "Frame 5", animated with GSAP.
+     Built for a weak player: every layer is a finished image (made by tools/poster_assets.py) and only transform/opacity
+     animate, so the GPU just moves pictures; no filters, masks, blend modes or SVG are redrawn per frame.
+     Back to front: bg.jpg (gradient, glow, camo) · 2/10 rows (alternate rows run left / right) · model · KACHA HAUS (letters
+     rise in one by one, a light band sweeps across, they lift out, loop) · logo.
      URL options: ?rows=40 (px/s of the 2/10 rows, 0 = still) -->
 <style>
-@font-face { font-family: Higed; src: url(higed.ttf) format('truetype'); font-display: block; }
 html, body { margin: 0; width: 100%; height: 100%; background: #000; overflow: hidden; }
 #stage { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 0 0; overflow: hidden; opacity: 0;
-  background: linear-gradient(180deg, #000 0%, #000 14%, #81987c 42%, #81987c 100%); }
-.glow { position: absolute; left: 0; top: 887px; width: 988px; height: 1085px; border-radius: 50%; background: #373737; filter: blur(112px); }
-.rows { position: absolute; inset: 0; filter: blur(5px);
-  -webkit-mask-image: linear-gradient(180deg, transparent 16%, #000 62%); mask-image: linear-gradient(180deg, transparent 16%, #000 62%); }
-.row { position: absolute; left: 0; white-space: nowrap; font: 128px/128px Higed, sans-serif; color: #000; will-change: transform; }
-.camo { position: absolute; inset: 0; mix-blend-mode: multiply; opacity: .5; }
+  background: #000 url(bg.jpg) 0 0 / 1080px 1920px no-repeat; }
+.row { position: absolute; left: 0; height: 160px; background: url(row.png) 0 0 / auto 160px repeat-x; will-change: transform; backface-visibility: hidden; }
 .girl { position: absolute; left: 0; top: 570px; width: 1080px; height: 1350px; }
-#word { position: absolute; left: 0; top: 0; }
+#word { position: absolute; left: 0; width: 1080px; overflow: hidden; }
+.ltr { position: absolute; top: 0; background: url(word.png) no-repeat; will-change: transform; backface-visibility: hidden; }
+#band { position: absolute; top: 0; left: 0; width: 300px; overflow: hidden; will-change: transform; opacity: 0;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 45%, #000 55%, transparent); mask-image: linear-gradient(90deg, transparent, #000 45%, #000 55%, transparent); }
+#lit { position: absolute; top: 0; left: 0; width: 1080px; background: url(word-lit.png) no-repeat; will-change: transform; }
 .logo { position: absolute; left: 29px; top: 1845px; width: 57px; height: 56px; }
 </style></head>
 <body>
 <div id="stage">
-  <div class="glow"></div>
-  <div class="rows" id="rows"></div>
-  <svg class="camo" width="1080" height="1920" aria-hidden="true">
-    <filter id="camo" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency=".085" numOctaves="2" seed="7" />
-      <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  1 0 0 0 0" />
-      <feComponentTransfer><feFuncA type="discrete" tableValues="0 0 0 0 0 1 1 1 1 1" /></feComponentTransfer>
-      <feColorMatrix type="matrix" values="0 0 0 0 .29  0 0 0 0 .35  0 0 0 0 .28  0 0 0 1 0" />
-    </filter>
-    <rect width="1080" height="1920" filter="url(#camo)" />
-  </svg>
+  <div id="rows"></div>
   <img class="girl" src="girl.webp" alt="">
-  <svg id="word" width="1080" height="1920" viewBox="0 0 1080 1920" aria-label="KACHA HAUS">
-    <defs>
-      <!-- glassy chrome: pale sage body (Figma: white 70% over sage 50%) with soft iridescent bands -->
-      <linearGradient id="chrome" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="1080" y2="120">
-        <stop offset="0" stop-color="#c9d3c6" /><stop offset=".14" stop-color="#eef1ec" /><stop offset=".27" stop-color="#b3c1b0" />
-        <stop offset=".4" stop-color="#e4e0ea" /><stop offset=".53" stop-color="#c3cfc0" /><stop offset=".66" stop-color="#f2f4f0" />
-        <stop offset=".8" stop-color="#aebdab" /><stop offset=".92" stop-color="#e6ece8" /><stop offset="1" stop-color="#c5d0c2" />
-      </linearGradient>
-      <!-- the band of light that sweeps across the letters -->
-      <linearGradient id="sheen" gradientUnits="userSpaceOnUse" x1="-420" y1="0" x2="-160" y2="0">
-        <stop offset="0" stop-color="#fff" stop-opacity="0" /><stop offset=".5" stop-color="#fff" stop-opacity=".85" /><stop offset="1" stop-color="#fff" stop-opacity="0" />
-      </linearGradient>
-      <clipPath id="lineClip"><rect id="clipRect" x="0" y="0" width="1080" height="10" /></clipPath>
-    </defs>
-    <g clip-path="url(#lineClip)">
-      <g id="base" fill="url(#chrome)" opacity=".94"></g>
-      <g id="shine" fill="url(#sheen)"></g>
-    </g>
-  </svg>
+  <div id="word" aria-label="KACHA HAUS"><div id="band"><div id="lit"></div></div></div>
   <img class="logo" src="k-symbol.svg" alt="">
 </div>
 <script src="gsap.min.js"></script>
 <script>
 (function () {
   var q = new URLSearchParams(location.search), rowSpeed = q.has('rows') ? +q.get('rows') : 40;
-  var stage = document.getElementById('stage'), NS = 'http://www.w3.org/2000/svg';
+  var stage = document.getElementById('stage');
+  gsap.config({ force3D: true });
 
   function fit () {   // clientWidth, not innerWidth: the unscaled stage can widen the layout viewport on phones/players
     var W = document.documentElement.clientWidth, H = document.documentElement.clientHeight, s = Math.min(W / 1080, H / 1920);
     stage.style.transform = 'translate(' + (W - 1080 * s) / 2 + 'px,' + (H - 1920 * s) / 2 + 'px) scale(' + s + ')'; }
   addEventListener('resize', fit); fit();
-  function scale () { return stage.getBoundingClientRect().width / 1080; }
 
-  // ---- 2/10 rows: two identical halves per row so it loops seamlessly; even rows run left, odd rows run right
-  function buildRows () {
-    var host = document.getElementById('rows');
+  function build (L) {
+    // 2/10 rows: one shared image strip per row, two loops wide; fade towards the top is a fixed opacity per row
+    var host = document.getElementById('rows'), loop = L.rowLoop;
     for (var i = 0; i < 17; i++) {
-      var row = document.createElement('div'); row.className = 'row'; row.style.top = (i * 116 - 20) + 'px';
-      var half = document.createElement('span'); half.textContent = new Array(9).join('2/10 ');
-      row.appendChild(half); host.appendChild(row);
-      var w = half.getBoundingClientRect().width / scale();
-      row.appendChild(half.cloneNode(true));
-      var start = -((i * 137) % w);                                   // stagger the columns row by row
+      var y = i * 116 - 36, a = Math.max(0, Math.min(1, (y / 1920 - .16) / .46)) * .72;
+      if (a <= 0.01) continue;
+      var row = document.createElement('div'); row.className = 'row';
+      row.style.top = y + 'px'; row.style.width = Math.ceil(loop * 2) + 'px'; row.style.opacity = a.toFixed(3);
+      host.appendChild(row);
+      var start = -((i * 137) % loop);
       gsap.set(row, { x: start });
-      if (rowSpeed <= 0) continue;
-      gsap.to(row, { x: start + (i % 2 ? w : -w), duration: w / rowSpeed, ease: 'none', repeat: -1,
-        modifiers: { x: gsap.utils.unitize(gsap.utils.wrap(-w, 0)) } });
+      if (rowSpeed > 0) gsap.to(row, { x: start + (i % 2 ? loop : -loop), duration: loop / rowSpeed, ease: 'none', repeat: -1,
+        modifiers: { x: gsap.utils.unitize(gsap.utils.wrap(-loop, 0)) } });
     }
-  }
 
-  // ---- KACHA HAUS in Higed, 960px wide, over the top of her head as in the Figma frame
-  function buildWord () {
-    var svg = document.getElementById('word'), base = document.getElementById('base'), shine = document.getElementById('shine');
-    var chars = 'KACHA HAUS', probe = document.createElementNS(NS, 'text');
-    probe.setAttribute('font-family', 'Higed'); probe.setAttribute('font-size', '100'); probe.textContent = chars; svg.appendChild(probe);
-    var size = 100 * 960 / probe.getComputedTextLength(); probe.setAttribute('font-size', size);
-    // cap height from canvas metrics (an SVG bbox is the whole em box, not the letters)
-    var cx = document.createElement('canvas').getContext('2d'); cx.font = size + 'px Higed';
-    var m = cx.measureText(chars), cap = m.actualBoundingBoxAscent, below = m.actualBoundingBoxDescent;
-    var left = (1080 - probe.getComputedTextLength()) / 2, capTop = 612, y0 = capTop + cap;   // caps start at her crown, as in Figma
-    var box = { height: cap + below };
-    var letters = [];
-    for (var i = 0; i < chars.length; i++) {
-      if (chars[i] === ' ') continue;
-      var x = left + probe.getStartPositionOfChar(i).x, pair = [];
-      [base, shine].forEach(function (g) {
-        var t = document.createElementNS(NS, 'text');
-        t.setAttribute('font-family', 'Higed'); t.setAttribute('font-size', size); t.setAttribute('x', x); t.setAttribute('y', y0);
-        t.textContent = chars[i]; g.appendChild(t); pair.push(t);
-      });
-      letters.push(pair);
-    }
-    svg.removeChild(probe);
-    var clip = document.getElementById('clipRect'); clip.setAttribute('y', capTop - 24); clip.setAttribute('height', box.height + 48);
-    return { letters: letters, h: box.height + 40, left: left, width: 960 };
-  }
-
-  function animateWord (W) {
-    var sheen = document.getElementById('sheen'), all = [].concat.apply([], W.letters);
-    var from = { x1: W.left - 420, x2: W.left - 160 }, to = { x1: W.left + W.width + 160, x2: W.left + W.width + 420 };
-    gsap.set(all, { y: W.h });
+    // KACHA HAUS: each letter is a window onto word.png; the clip is the static #word box
+    var word = document.getElementById('word'), band = document.getElementById('band'), lit = document.getElementById('lit');
+    word.style.top = L.top + 'px'; word.style.height = L.h + 'px'; band.style.height = lit.style.height = L.h + 'px';
+    var letters = L.letters.map(function (b) {
+      var d = document.createElement('div'); d.className = 'ltr';
+      d.style.left = b[0] + 'px'; d.style.width = b[1] + 'px'; d.style.height = L.h + 'px';
+      d.style.backgroundPosition = (-b[0]) + 'px 0'; word.insertBefore(d, band); return d;
+    });
+    var H = L.h, from = L.left - 300, to = L.left + L.width;
+    gsap.set(letters, { y: H });
     var tl = gsap.timeline({ repeat: -1, repeatDelay: .5 });
-    // rise in, one letter at a time, long ease-out (no overshoot)
-    W.letters.forEach(function (pair, i) { tl.to(pair, { y: 0, duration: 1.8, ease: 'expo.out' }, .3 + i * .08); });
-    // light sweeps across twice while the word holds
-    tl.fromTo(sheen, { attr: from }, { attr: to, duration: 2.8, ease: 'power2.inOut' }, 1.8);
-    tl.fromTo(sheen, { attr: from }, { attr: to, duration: 2.8, ease: 'power2.inOut', immediateRender: false }, 5.6);
-    // lift out the top, one by one, then the loop starts again from below
-    W.letters.forEach(function (pair, i) { tl.to(pair, { y: -W.h, duration: 1.3, ease: 'power3.inOut' }, 9.4 + i * .05); });
-    tl.set(all, { y: W.h });
-    return tl;
-  }
+    // rise in one by one, long ease-out, no overshoot
+    tl.to(letters, { y: 0, duration: 1.8, ease: 'expo.out', stagger: .08 }, .3);
+    // light band sweeps across twice: the band moves right while the white letters inside it move left by the same amount
+    [1.9, 5.6].forEach(function (t) {
+      tl.set(band, { opacity: 1 }, t);
+      tl.fromTo(band, { x: from }, { x: to, duration: 2.8, ease: 'power2.inOut' }, t);
+      tl.fromTo(lit, { x: -from }, { x: -to, duration: 2.8, ease: 'power2.inOut' }, t);
+      tl.set(band, { opacity: 0 }, t + 2.8);
+    });
+    // lift out the top one by one, then start again from below
+    tl.to(letters, { y: -H, duration: 1.3, ease: 'power3.inOut', stagger: .05 }, 9.4);
+    tl.set(letters, { y: H });
 
-  function start () {
-    buildRows();
-    animateWord(buildWord());
     gsap.to(stage, { opacity: 1, duration: 1.6, ease: 'expo.out' });
   }
-  var img = stage.querySelector('.girl'), ready = 0;
-  function one () { if (++ready === 2) start(); }
-  (document.fonts && document.fonts.load ? document.fonts.load('100px Higed') : Promise.resolve()).then(one, one);
-  img.complete ? one() : (img.onload = img.onerror = one);
+
+  // wait for the images so nothing pops in half-decoded
+  var srcs = ['bg.jpg', 'row.png', 'word.png', 'word-lit.png', 'girl.webp'], left = srcs.length + 1, layout;
+  function done () { if (--left === 0) build(layout); }
+  srcs.forEach(function (s) { var im = new Image(); im.onload = im.onerror = done; im.src = s; });
+  fetch('layout.json').then(function (r) { return r.json(); }).then(function (j) { layout = j; done(); });
 })();
 </script>
 </body></html>
