@@ -14,6 +14,11 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont, ImageChops
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 OUT = ROOT / 'public/poster'; FONT = str(ROOT / 'src/assets/higed.ttf')
 W, H = 1080, 1920
+# The Figma frame is 960x1200; on the 9:16 screen it is drawn 1.5x (1440x1800) at (-180, 120) so the model fills the height.
+FX, FY, FS = -180, 120, 1.5
+def fx(x): return FX + x * FS
+def fy(y): return FY + y * FS
+CAP_TOP = round(fy(90))                                           # KACHA HAUS caps start where the Figma caps do
 
 def lerp(a, b, t): return tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3))
 def hexc(h): return tuple(int(h[i:i+2], 16) for i in (1, 3, 5))
@@ -24,10 +29,11 @@ bg = Image.new('RGB', (W, H))
 px = bg.load(); d = ImageDraw.Draw(bg)
 for y in range(H):
     t = y / H
-    c = (0, 0, 0) if t <= .14 else sage if t >= .42 else lerp((0, 0, 0), sage, (t - .14) / .28)
+    t0, t1 = FY / H, fy(.34615 * 1200) / H                          # Figma: black at the frame top -> sage at 34.6%
+    c = (0, 0, 0) if t <= t0 else sage if t >= t1 else lerp((0, 0, 0), sage, (t - t0) / (t1 - t0))
     d.line([(0, y), (W, y)], fill=c)
-glow = Image.new('L', (W, H), 0); ImageDraw.Draw(glow).ellipse([0, 887, 988, 887 + 1085], fill=255)
-glow = glow.filter(ImageFilter.GaussianBlur(112))
+glow = Image.new('L', (W, H), 0); ImageDraw.Draw(glow).ellipse([fx(0), fy(282), fx(878), fy(282 + 964)], fill=255)
+glow = glow.filter(ImageFilter.GaussianBlur(100 * FS))
 bg = Image.composite(Image.new('RGB', (W, H), hexc('#373737')), bg, glow)
 random.seed(7)
 def noise(cell):
@@ -55,7 +61,7 @@ strip = strip.filter(ImageFilter.GaussianBlur(4)).point(lambda v: min(255, round
 row = Image.new('RGBA', strip.size, (0, 0, 0, 0)); row.putalpha(strip)
 row.save(OUT / 'row.png', optimize=True)
 
-# ---- KACHA HAUS: fitted to 960 px wide, caps start at y = 612
+# ---- KACHA HAUS: fitted to 960 px wide, caps start at CAP_TOP
 text = 'KACHA HAUS'; size = 100
 size = 100 * 960 / ImageFont.truetype(FONT, 100).getlength(text)
 fw = ImageFont.truetype(FONT, round(size))
@@ -82,6 +88,6 @@ for i, ch in enumerate(text):
     if ch == ' ': continue
     a = left + fw.getlength(text[:i]); b = left + fw.getlength(text[:i + 1])
     letters.append([round(a - 6), round(b - a + 12)])                # a little overlap so no glyph edge is cut
-json.dump({'top': 612 - PAD, 'h': boxH, 'left': round(left), 'width': round(tw), 'letters': letters,
+json.dump({'top': CAP_TOP - PAD, 'h': boxH, 'left': round(left), 'width': round(tw), 'letters': letters,
            'rowLoop': loop_w, 'rowH': 160}, open(OUT / 'layout.json', 'w'))
 print('ok', {p.name: p.stat().st_size for p in OUT.glob('*') if p.suffix in ('.jpg', '.png')}, 'font', round(size), 'loop', round(loop_w))
