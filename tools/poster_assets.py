@@ -51,7 +51,7 @@ strip = Image.new('L', (strip_w, 160), 0); sd = ImageDraw.Draw(strip)
 x = 0.0
 while x < strip_w:
     sd.text((x, 16), unit_txt, font=f, fill=255); x += unit
-strip = strip.filter(ImageFilter.GaussianBlur(5))
+strip = strip.filter(ImageFilter.GaussianBlur(4)).point(lambda v: min(255, round(v * 1.2)))   # matches CSS blur(5px) on live text
 row = Image.new('RGBA', strip.size, (0, 0, 0, 0)); row.putalpha(strip)
 row.save(OUT / 'row.png', optimize=True)
 
